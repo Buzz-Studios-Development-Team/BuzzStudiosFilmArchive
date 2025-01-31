@@ -1,0 +1,427 @@
+@import url('https://fonts.googleapis.com/css2?family=Yantramanav:wght@100;300;400;500;700;900&display=swap');
+
+/* Set the background color of the page */
+body {
+  background-color: #333333;
+  font-family: 'Calibri', 'Arial';
+}
+
+/* Style the header with the Buzz Studios logo */
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 160px;
+  background-color: #222222;
+  color: white;
+}
+
+.header img {
+  height: 125px;
+}
+
+/* Style the film thumbnails */
+main {
+  display: grid;
+  grid-gap: 20px;
+  padding: 20px;
+}
+
+main h2 {
+  grid-column: 1 / -1;
+  margin-top: 40px;
+  font-size: 30px;
+  text-align: center;
+  color: white;
+}
+
+main a {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  background-color: #ffffff;
+  border-radius: 0px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+main a:hover {
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+main a img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  width: 280px;
+}
+
+.bio {
+  display: flex;
+}
+
+.bio p {
+  color: white;
+  max-width: 450px;
+  padding-left: 50px;
+  font-size: 20px;
+}
+
+.bio img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  width: 180px;
+}
+
+main a div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px;
+  margin: 0;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.6);
+  font-size: 18px;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.independent-icon {
+  background-color: rgba(255, 208, 0, 0.5);
+  padding: 6px;
+  border-radius: 2px;
+  margin-top: -15px;
+  font-size: 12px;
+}
+
+.restricted-icon {
+  background-color: rgba(255, 107, 107, 0.5);
+  padding: 6px;
+  border-radius: 2px;
+  margin-top: -15px;
+  font-size: 12px;
+}
+
+.bonus-icon {
+  background-color: rgba(115, 255, 115, 0.5);
+  padding: 6px;
+  border-radius: 2px;
+  margin-top: -15px;
+  font-size: 12px;
+}
+
+.status-icon {
+  background-color: rgba(136, 136, 136, 0.5);
+  padding: 6px;
+  border-radius: 2px;
+  margin-top: -15px;
+  font-size: 12px;
+}
+
+.homepage {
+  text-align: center;
+}
+
+.content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.main {
+  font-size: 0; /* remove default spacing between inline-block elements */
+}
+
+main a {
+  display: inline-block;
+  overflow: hidden;
+  position: relative;
+}
+
+.film {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+.content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.info-box {
+  flex: 0 0 40%;
+  background-color: #222222;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 700px;
+}
+
+.title {
+  font-size: 35px;
+  text-align: center;
+}
+
+.subheading {
+  font-size: 20px;
+  text-align: center;
+  margin-top: -15px;
+}
+
+.watch-page {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.synopsis {
+  font-size: 18px;
+  text-align: center;
+  margin: 0 auto;
+  max-width: 70%;
+}
+
+.video-player {
+  width: 70%;
+  margin-right: 40px;
+}
+
+.video-container {
+  position: relative;
+  overflow: hidden;
+  width: 50%;
+  padding-top: 28.13%;
+}
+
+.msg-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.video-container div {
+  padding-top: 0%;
+}
+
+.player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.coming-soon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #444444;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 680px;
+  height: 400px;
+}
+
+.cs {
+  font-size: 50px;
+  margin: 5px;
+}
+
+.css {
+  font-size: 24px;
+  margin: 5px;
+  text-align: center;
+}
+
+.accesscode {
+  text-align: center;
+  font-family: Arial;
+  font-size: 25px;
+}
+
+.submitaccesscode {
+  font-size: 25px;
+  font-family: Arial;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 5px;
+}
+
+.thumbnail {
+  min-width: 200px;
+}
+
+.intro-box {
+  margin: 0 auto;
+  width: 550px;
+}
+
+.intro-header {
+  color: white;
+  font-size: 20px; 
+  font-family: "Lucida Sans", 'Arial';
+}
+
+.cc-icon {
+  background-color: rgb(40, 40, 40, 0.5);
+  padding: 4px;
+  border-radius: 5px;
+  margin-top: -15px;
+  font-size: 15px;
+}
+
+.info-box-indep {
+  flex: 0 0 40%;
+  background-color: #6b4f00;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 700px;
+}
+
+.info-box-bonus {
+  flex: 0 0 40%;
+  background-color: #002708;
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 700px;
+}
+
+.intro-body {
+  color: white;
+  font-size: 15px;
+  font-family: "Lucida Sans", "Arial";
+  text-justify: inter-word;
+}
+.search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+
+.tag-body {
+  background-color: rgb(70, 70, 70);
+  border-radius: 5px;
+  display: flex;
+  width: fit-content;
+  padding: 7px;
+  font-size: 14px;
+  font-family: 'Arial';
+  margin: 5px;
+  cursor: pointer;
+}
+
+.input-field {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #c9c9c9;
+  background: transparent;
+  color: white;
+  outline: none;
+  width: 300px;
+  transition: width 0.4s ease-in-out;
+  border-radius: 5px;
+}
+
+.input-field:focus {
+  border-color: #aaa;
+}
+
+.radio-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media screen and (max-width: 590px) {
+  .intro-box {
+    width: 400px;
+  }
+
+  .intro-header {
+    font-size: 15px;
+  }
+
+  .intro-body {
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .intro-box {
+    width: 330px;
+  }
+
+  .intro-header {
+    font-size: 12px;
+  }
+
+  .intro-body {
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .watch-page {
+    display: inline;
+  }
+
+  .video-container {
+    margin: 0 auto;
+    width: 80%;
+    padding-top: 50%;
+    margin-bottom: 10px;
+  }
+
+  .info-box {
+    width: 70%;
+    margin: 0 auto;
+  }
+
+  .info-box-indep {
+    width: 70%;
+    margin: 0 auto;
+  }
+
+  .msg-container {
+    width: 80%;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .coming-soon {
+    width: 100%;
+    height: 100%;
+    padding: 0%;
+  }
+
+  .coming-soon button {
+    margin-bottom: 10px;
+  }
+
+  .coming-soon p {
+    width: 100%;
+    text-align: center;
+  }
+}

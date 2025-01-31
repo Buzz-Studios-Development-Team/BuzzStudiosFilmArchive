@@ -1,0 +1,43 @@
+{
+    "years": {
+        "2024-2025": {
+            "President": "Ethan Ollins",
+            "Financial Manager": "Mario Lopez",
+            "Internal Vice President": "Robin Dixon",
+            "External Vice President": "Shashwat Sahay",
+            "Historian (5/2024 to 12/2024)": "Ryan Li",
+            "Historian 1 (1/2025 to 5/2025)": "Lexi Johnson",
+            "Historian 2 (1/2025 to 5/2025)": "Rachel Han"
+        },
+        "2023-2024": {
+            "President": "Ethan Ollins",
+            "Financial Manager": "William Novak",
+            "Internal Vice President": "Mario Lopez",
+            "External Vice President": "Sneha Malneedi",
+            "Historian (5/2023 to 8/2023)": "Teymur Gadzhiev",
+            "Historian (8/2023 to 10/2023)": "Oliver Bemis",
+            "Historian (1/2024 to 5/2024)": "Gerardo Torres"
+        },
+        "2022-2023": {
+            "President": "Gabriel Jones",
+            "Financial Manager": "Daniel George",
+            "Internal Vice President": "William Novak",
+            "External Vice President": "Sneha Malneedi",
+            "Historian": "Ethan Ollins"
+        },
+        "2021-2022": {
+            "President": "Tish Bhatnagar",
+            "Financial Manager (5/2021 to 12/2021)": "Rishab Mitra",
+            "Financial Manager (1/2022 to 5/2022)": "Daniel George",
+            "Co-Vice President 1": "Loy Boyter",
+            "Co-Vice President 2": "Gabriel Jones",
+            "Historian (2/2022 to 5/2022)": "Ethan Ollins"
+        },
+        "2020-2021": {
+            "President": "Tish Bhatnagar"
+        },
+        "2019-2020": {
+            "President": "Winston Berger"
+        }
+    }
+}
