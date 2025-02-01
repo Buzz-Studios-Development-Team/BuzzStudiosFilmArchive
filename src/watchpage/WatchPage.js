@@ -1,40 +1,60 @@
+// React imports
+import { useState, useEffect } from 'react';
+import {Link, useParams } from 'react-router-dom';
+import {React, useRef} from 'react';
+
+// Firebase imports
 import { getAuth, signInAnonymously } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { doc, getDoc, getDocs, collection, query, where, orderBy } from "firebase/firestore";
+
+// MUI imports
 import { Button } from "@mui/material";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
+
+// Other tools
 import Film from '../tools/Film.js';
-import { useState, useEffect } from 'react';
-import {Link, useParams } from 'react-router-dom';
-import {React, useRef} from 'react';
 import BuzzHeader from "../homepage/BuzzHeader.js";
+import VideoPlayer from './VideoPlayer.js';
+import CastTable from './CastTable.js';
 
 export default function WatchPage() {
+    // The film ID as pulled from the URL
     const { id } = useParams();
+    // Metadata for the viewed film
     const [filmData, setFilmData] = useState({});
+    // Authentication status, if necessary
     const [authenticated, setAuthenticated] = useState(false);
+    // The video URL for the film
     const [url, setURL] = useState(false);
+    // Indicates whether the URL has been retrieved yet
     const [urlLoaded, setLoaded] = useState(false);
+
+    // Contains other films made by the same director(s)
     const [otherFilms, setOtherFilms] = useState({});
+    // The number of directors for the active film
     const [numDirectors, setNumDirectors] = useState(1);
+
+    // The download link to the script, if provided
     const [scriptURL, setScriptURL] = useState("");
+    // The link to the vtt file, if provided
     const [captionsURL, setCaptionsURL] = useState("");
-    const [cast, setCast] = useState();
+
+    // The access code as provided by the user
     const [usedPassword, setUsedPassword] = useState();
+
+    // Whether to show the cast table
     const [showCast, setShowCast] = useState();
-    const [otherCast, setOtherCast] = useState({});
+    // Whether to show director bios
     const [bios, setBios] = useState([]);
-    const [allFilms, setAllFilms] = useState();
+    // Whether the film has not been found
     const [notFound, setNotFound] = useState(false);
+
+    // Keeps track of associated bonus material
     const [associated, setAssociated] = useState({});
+
+    // The cast record for the film, if provided
     const [actors, setActors] = useState([]);
   
     const videoRef = useRef();
@@ -55,95 +75,114 @@ export default function WatchPage() {
       const auth = getAuth();
   
       const fetchFilms = async () => {
-        setFilmData({});
-        setAuthenticated(false);
-        setURL(false);
-        setLoaded(false);
-        setOtherFilms({});
-        setOtherCast({});
-        setAssociated({});
-        setNumDirectors(1);
-        setScriptURL("");
-        setCaptionsURL("");
-        setCast();
-        setUsedPassword("");
-        setShowCast(false);
-        setActors([]);
-  
-        var db = getFirestore(app);
-        var docRef = doc(db, "films", id);
-        var docSnap = await getDoc(docRef);
-        var data = docSnap.data();
-        setNotFound(data === undefined);
-        if (data === undefined) {
-          docRef = doc(db, "films", "404");
-          docSnap = await getDoc(docRef);
-          data = docSnap.data();
-        }
-  
-        data['id'] = doc.id;
-  
-        docRef = collection(db, "films");
-        var q = query(docRef, orderBy("order"));
-        docSnap = await getDocs(q);
-        setAllFilms(docSnap);
-  
-        var filmsByDirector = [];
-        var assoc = [];
-  
-        var directors = data['director'];
-        var names = splitNames(directors);
-        setNumDirectors(names.length);
-  
-        var bios = [];
-  
-        docSnap.forEach((doc) => {
-          var film = doc.data();
-  
-          for (var i = 0; i < names.length; i++) {
-            if (film.director.includes(names[i]) && film.title != data.title && !film.bonus) {
+
+          setFilmData({});
+          setAuthenticated(false);
+          setURL(false);
+          setLoaded(false);
+          setOtherFilms({});
+          setAssociated({});
+          setNumDirectors(1);
+          setScriptURL("");
+          setCaptionsURL("");
+          setUsedPassword("");
+          setShowCast(false);
+          setActors([]);
+    
+          // Search for the film by the provided ID
+          var db = getFirestore(app);
+          var docRef = doc(db, "films", id);
+          var docSnap = await getDoc(docRef);
+          var data = docSnap.data();
+
+          // If not found, load the 404 film
+          setNotFound(data === undefined);
+          if (data === undefined) {
+            docRef = doc(db, "films", "404");
+            docSnap = await getDoc(docRef);
+            data = docSnap.data();
+          }
+    
+          // Add the ID to the data structure
+          data['id'] = doc.id;
+    
+          // Request all films and order by intra-semester order
+          docRef = collection(db, "films");
+          var q = query(docRef, orderBy("order"));
+          docSnap = await getDocs(q);
+    
+          var filmsByDirector = [];
+          var assoc = [];
+    
+          // Split the director field into individual names and set the number of directors
+          var directors = data['director'];
+          var names = splitNames(directors);
+          setNumDirectors(names.length);
+    
+          var bios = [];
+    
+          // For each film, check if any of the directors were involved
+          docSnap.forEach((doc) => {
+            var film = doc.data();
+    
+            for (var i = 0; i < names.length; i++) {
+
+              // Do not include bonus material in the other films section
+              if (film.director.includes(names[i]) && film.title != data.title && !film.bonus) {
+                film['id'] = doc.id;
+                filmsByDirector.push(film);
+              }
+            }
+    
+            // If the film has associated bonus material matching the current record, add it
+            if (data.associated !== undefined && data.associated.includes(doc.id))
+            {
               film['id'] = doc.id;
-              filmsByDirector.push(film);
+              assoc.push(film);
             }
           }
+        );
   
-          if (data.associated !== undefined && data.associated.includes(doc.id))
-          {
-            film['id'] = doc.id;
-            assoc.push(film);
-          }
-        }
-      );
-  
+        // Set all the necessary film record states
         setFilmData(data);
         setOtherFilms(filmsByDirector);
         setAssociated(assoc);
   
+        // Retrieve the director records
         docRef = collection(db, "directors");
         docSnap = await getDocs(docRef);
         docSnap.forEach((doc) => {
+
+          // If the given director has a bio, add to the list
           var director = doc.data();
-  
           if (names.includes(director.name)) {
             bios.push(director);
           }
         });
   
+        // Retrieve the actor collection
         var actorList = [];
         docRef = collection(db, "actors");
         docSnap = await getDocs(docRef);
+
+        // For each actor, add its ID as a field and add to the list
         docSnap.forEach((doc) => {
           var actor = doc.data();
           actor.id = doc.id;
           actorList.push(actor);
         });
+
+        // Set actor and bio states
         setActors(actorList);
-  
         setBios(bios);
   
+        // If the film is released, we can authenticate
         if (data.access === "released") {
+
           signInAnonymously(auth)
             .then(() => {
+              
+              // Once this is done, send a POST request to the Cloud Run function that returns a signed film URL
               fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
               method: 'POST',
               headers: {
@@ -154,9 +193,11 @@ export default function WatchPage() {
                 "film": data.filmfile,
                 "uid": auth.currentUser.uid
               })
+              // Need to include the title, auth UID, and film filename
             })
             .then(response => response.json())
             .then(d => {
+              // Approve the authentication and set the video URL state
               setURL(d.url);
               setAuthenticated(true);
             })
@@ -166,6 +207,8 @@ export default function WatchPage() {
           });
         }
       }
+
+      // Call the async fetch films function
       fetchFilms();
     }, [id]);
   
@@ -174,6 +217,7 @@ export default function WatchPage() {
     const authenticate = () => {
       const auth = getAuth();
   
+      // If we need to authenticate using an access code, send a request to the request-film endpoint
       fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
         method: 'POST',
         headers: {
@@ -188,6 +232,7 @@ export default function WatchPage() {
       .then(response => response.json())
       .then(data => {
         if (data.url != "403") {
+          // If the request was valid, retrieve the provided URL and authenticate
           signInAnonymously(auth)
           .then(() => {
               setURL(data.url);
@@ -203,6 +248,7 @@ export default function WatchPage() {
       })
     }
 
+    // Splits names joined by commas and conjunctions
     function splitNames(nameList) {
         let names = nameList.split(',');
       
@@ -219,55 +265,23 @@ export default function WatchPage() {
         return finalNames;
       }
   
+    // When authentication changes, attempt to load the current video URL
     useEffect(() => {
       if (authenticated && !urlLoaded) {
           setLoaded(true);
           videoRef.current?.load();
           
+          // If the script is provided, request it
           if (filmData.script !== undefined && filmData.script !== "") {
             requestScript();
           }
+
+          // If captions are provided, request them
           if (filmData.captions !== undefined && filmData.captions !== "") {
             requestCaptions();
           }
       }
     }, [authenticated]);
-  
-    // useEffect(() => {
-    //   if (allFilms !== undefined && cast !== undefined)
-    //   {
-    //     var filmsWithCast = [];
-  
-    //     allFilms.forEach((doc) => {
-    //       var film = doc.data();
-  
-    //       if (doc.id !== id) {
-    //         for (var i = 0; i < cast.length; i++) {
-    //           var name = cast[i][0];
-              
-    //           if (film.cast !== undefined) {
-  
-    //             for (var j = 0; j < film.cast.length; j++) {
-    //               if (film.cast[j][0] == name) {
-    //                 if (!(name in filmsWithCast)) {
-    //                   filmsWithCast[name] = [];
-    //                 }
-    //                 var f = doc.data();
-    //                 f.id = doc.id;
-  
-    //                 if (!(filmsWithCast[name].some(e => e.id === f.id))) {
-    //                   filmsWithCast[name].push(f);
-    //                 }
-    //               }
-    //             }
-    //           }
-    //         }
-    //       }
-    //     });
-    //   }
-          
-    //   setOtherCast(filmsWithCast);
-    // }, [cast]);
   
     const requestScript = () => {
       const auth = getAuth();
@@ -316,79 +330,39 @@ export default function WatchPage() {
       }
     }
   
-  
-    const styles = {
-      tableContainer: {
-        maxWidth: '600px',
-        margin: '20px auto',
-        borderCollapse: 'collapse',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      },
-      table: {
-        width: '100%',
-        border: '1px solid #ddd',
-      },
-      th: {
-        backgroundColor: '#f4f4f4',
-        padding: '12px',
-        textAlign: 'left',
-        fontWeight: 'bold',
-        borderBottom: '2px solid #ddd',
-      },
-      td: {
-        padding: '10px',
-        borderBottom: '1px solid #ddd',
-      },
-      trHover: {
-        cursor: 'pointer',
-        transition: 'background-color 0.2s',
-      },
-      trHoverActive: {
-        backgroundColor: '#f9f9f9',
-      },
-      header: {
-        textAlign: 'center',
-        marginBottom: '20px',
-        fontSize: '24px',
-      },
-    };
-  
     const darkTheme = createTheme({
       palette: {
-        mode: "dark", // Enables dark mode
+        mode: "dark", 
         background: {
-          default: "#000", // Black background
-          paper: "#111", // Slightly lighter for table rows/paper
+          default: "#000",
+          paper: "#111", 
         },
         text: {
-          primary: "#fff", // White text
-          secondary: "#ccc", // Light gray text for secondary
+          primary: "#fff", 
+          secondary: "#ccc", 
         },
       },
     });
   
     return (
       <div>
+
         <BuzzHeader/>
-        <br></br><br></br>
+        <br/><br/>
+
         <div className="watch-page">
           <div className={filmData.access == "released" || authenticated ? ("video-container") : ("msg-container")}>
-            {filmData.access == "released" || authenticated? (
-              <video ref={videoRef} crossOrigin='anonymous' playsInline controls controlsList="nodownload" class="player">
-                <source src={url}/>
-                <track
-                  label="English"
-                  kind="subtitles"
-                  srcLang="en"
-                  src={captionsURL}
-                   
-                />
-              </video>
-            ) : filmData.access == "unavailable" || filmData.access == "preprod" || filmData.access == "prod" || filmData.access == "postprod" ? (
-              <div className="coming-soon">
-                  <p class="cs"><b>Coming Soon</b></p>
-                  <p class="css">Please check back later.</p>
-              </div>
+            {
+              filmData.access == "released" || authenticated? (
+              <VideoPlayer videoRef={videoRef} url={url} captionsURL={captionsURL} />
+            ) : filmData.access == "unavailable" || 
+                filmData.access == "preprod" || 
+                filmData.access == "prod" || 
+                filmData.access == "postprod" ? (
+                <div className="coming-soon">
+                    <p class="cs"><b>Coming Soon</b></p>
+                    <p class="css">Please check back later.</p>
+                </div>
             ) : filmData.access == "restricted" ? (
               <div className="coming-soon">
                   <p class="cs"><b>Restricted</b></p>
@@ -400,11 +374,10 @@ export default function WatchPage() {
                 <p class="cs"><b>Loading...</b></p>
               </div>
               : <div className="coming-soon">
-              {/* <p class="cs"><b>"For the 404, for the A!"</b></p>
-              <p class="css">This film could not be found.</p> */}
               <p class="cs"><b>Loading...</b></p>
             </div>}
           </div>
+          
           {filmData.access !== undefined && <div className={filmData.independent ? "info-box-indep" : filmData.bonus ? "info-box-bonus" : "info-box"}>
             
             {!showCast && <><strong><p class="title">{filmData.title}</p></strong>
@@ -416,7 +389,7 @@ export default function WatchPage() {
             <div style={{display: "flex", alignItems: "center", justifyContent: "center", marginTop: "15px"}}>
             {filmData.tags.map((tag, i) => {
               return (
-                  <a style={{color: "white", textDecoration: "none"}} ><p class="tag-body">{tag}</p></a> //href={"/?tag=" + tag}
+                  <a style={{color: "white", textDecoration: "none"}} ><p class="tag-body">{tag}</p></a>
               )
             })}
             </div>}
@@ -424,33 +397,12 @@ export default function WatchPage() {
             {scriptURL !== "" && <Link style={{textDecoration: 'none'}} id="scriptLink" target="_blank" download to={scriptURL}><Button style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: "25px"}} variant="contained" id="scriptDownload">Download Script</Button></Link>}
             </>}
   
-            {showCast && <><ThemeProvider theme={darkTheme}>
-            <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 400 }} aria-label="simple table" mode="dark">
-              <TableHead>
-                <TableRow>
-                  <TableCell><strong>Name</strong></TableCell>
-                  <TableCell><strong>Role</strong></TableCell>
-                  <TableCell align="right"><strong>See More</strong></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filmData["cast-new"].map((row) => (
-                  <TableRow
-                    key={row.actor}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell size="small" component="th" scope="row">
-                      {getActorName(row.actor)}
-                    </TableCell>
-                    <TableCell size="small" >{row.role}</TableCell>
-                    <TableCell size="small" variant="contained" align="right"><Button onClick={() => {window.location.href = "/?actor=" + row.actor + "&name=" + getActorName(row.actor)}}>View</Button></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          </ThemeProvider></>}
+            {showCast && 
+            <CastTable
+              theme={darkTheme}
+              filmData={filmData}
+              getActorName={getActorName}
+            />}
   
           {filmData["cast-new"] !== undefined && <Button onClick={() => {setShowCast(!showCast)}} style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: scriptURL !== "" ? "10px" : "25px"}} variant="contained" id="scriptDownload">{showCast ? "Hide Cast" : "Show Cast"}</Button>}
           </div>}
@@ -502,28 +454,6 @@ export default function WatchPage() {
           </div>
           </main>
         </div>}
-          
-         {/* {(showCast && otherCast != {}) && <div style={{marginTop: "0px"}} className="watch-page">
-          <main>
-          {Object.keys(otherCast).map((actor, i) => {
-            return (
-              <>
-              <div className="semester"  key={i}>
-                <h2>Other Films Featuring {actor}</h2>
-                
-                <div className="films" >
-                  <div className="film-row" style={{display: "flex", alignItems: "center", flexDirection: "column", flexFlow: "wrap", justifyContent: "center"}} key={0}>
-                    {otherCast[actor].map(film => (
-                      <Film film={film}/>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              </>
-            )
-          })}
-          </main>
-        </div>} */}
       </div>
     );
   };
