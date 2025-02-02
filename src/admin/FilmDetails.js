@@ -9,8 +9,7 @@ export default class Film
     #access = "unavailable";
     #accessCode = "";
     #order = 0;
-    #indep = false;
-    #bonus = false;
+    #category = 0;
 
     filmfile = "";
     thumbnail = "";
@@ -90,19 +89,11 @@ export default class Film
         return this.order;
     }
 
-    setIndep(newIndep) {
-        this.indep = newIndep;
+    setCategory(newCategory) {
+        this.category = newCategory;
     }
 
-    getIndep() {
-        return this.indep;
-    }
-
-    setBonus(newBonus) {
-        this.bonus = newBonus;
-    }
-
-    getBonus() {
-        return this.bonus;
+    getCategory() {
+        return this.category;
     }
 }

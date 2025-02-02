@@ -3,23 +3,17 @@ import { Card, CardContent, TextField, Button, Select, MenuItem, InputLabel, For
 
 export default function InitDetailsTab(props) {
 
-    const [title, setTitle] = React.useState("");
-    const [semester, setSemester] = React.useState("");
-    const [director, setDirector] = React.useState("");
-    const [stars, setStars] = React.useState("");
-    const [synopsis, setSynopsis] = React.useState("");
-    const [order, setOrder] = React.useState("");
-    const [indep, setIndep] = React.useState(0);
-    const [access, setAccess] = React.useState("unavailable");
+    const [title, setTitle] = React.useState(props.filmDetails.getTitle());
+    const [semester, setSemester] = React.useState(props.filmDetails.getSemester());
+    const [director, setDirector] = React.useState(props.filmDetails.getDirector());
+    const [stars, setStars] = React.useState(props.filmDetails.getStars());
+    const [synopsis, setSynopsis] = React.useState(props.filmDetails.getSynopsis());
+    const [order, setOrder] = React.useState(props.filmDetails.getOrder());
+    const [category, setCategory] = React.useState(props.filmDetails.getCategory());
+    const [access, setAccess] = React.useState(props.filmDetails.getAccess());
     const [accessCode, setAccessCode] = React.useState("");
 
     var filmDetails = props.filmDetails;
-
-    React.useEffect(() => {
-        filmDetails.setAccess("unavailable");
-        filmDetails.setIndep(0);
-        filmDetails.setAccessCode()
-    }, []);
 
     const handleTitle = (title) => {
         filmDetails.setTitle(title);
@@ -51,9 +45,11 @@ export default function InitDetailsTab(props) {
         setOrder(order);
     }
 
-    const handleIndep = (indep) => {
-        filmDetails.setIndep(indep);
-        setIndep(indep);
+    const handleCategory = (category) => {
+        if (category >= 0 && category <= 2) {
+            filmDetails.setCategory(category);
+            setCategory(category);
+        }
     }
 
     const handleAccess = (access) => {
@@ -124,12 +120,12 @@ export default function InitDetailsTab(props) {
                 <FormControl style={{width: 400, margin: "0 auto"}}>
                 <InputLabel id="demo-simple-select-label">Category</InputLabel>
                 <Select
-                    value={indep}
+                    value={category}
                     labelId="select-indep"
                     id="select-indep-id"
                     style={{width: 400, margin: "0 auto"}}
                     label={"Category"}
-                    onChange={(event) => handleIndep(event.target.value)}>
+                    onChange={(event) => handleCategory(event.target.value)}>
                     <MenuItem value={0}>Regular</MenuItem>
                     <MenuItem value={1}>Self-Guided</MenuItem>
                     <MenuItem value={2}>Bonus</MenuItem>
@@ -155,7 +151,7 @@ export default function InitDetailsTab(props) {
                 </Select>
                 </FormControl>
 
-                {props.access === "restricted" && 
+                {props.filmDetails.access === "restricted" && 
                 <TextField 
                     value={accessCode}
                     onChange={(event) => handleAccessCode(event.target.value)} 
