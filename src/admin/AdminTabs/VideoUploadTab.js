@@ -3,7 +3,7 @@ import { Card, CardContent, Button } from "@mui/material";
 
 export default function VideoUploadTab(props) {
     return (
-        <Card>
+        <Card variant="outlined" sx={{width: 500, margin: "0 auto"}}>
             <CardContent style={{display: "flex", alignItems: "center", flexDirection: "column", justifyContent: "center"}}>
                 <p style={{color: "black", fontSize: 30, marginTop: 0}}>Film ID: <strong>{props.selectedFilm}</strong></p>
 

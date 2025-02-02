@@ -84,19 +84,19 @@ export default function AdminControls(props) {
         details.setStars(film.stars);
         details.setSynopsis(film.synopsis);
         details.setAccess(film.access);
-        details.setFilmFileName(film.filmfile !== undefined ? film.filmfile : "");
-        details.setThumbnailName(film.thumbnail !== undefined ? film.thumbnail : "");
-        details.setScriptName(film.script !== undefined ? film.script : "");
-        details.setCaptionsName(film.captions !== undefined ? film.captions : "");
+        details.filmfile = film.filmfile !== undefined ? film.filmfile : "";
+        details.thumbnail = film.thumbnail !== undefined ? film.thumbnail : "";
+        details.scriptfile = film.script !== undefined ? film.script : "";
+        details.captionsfile = film.captions !== undefined ? film.captions : "";
         details.setOrder(film.order);
-        details.setCast(film['cast-new']);
+        details.cast = film['cast-new'];
         
         if (film.independent !== undefined && film.independent)
-            details.setIndep(1);
+            details.setCategory(1);
         else if (film.bonus !== undefined && film.bonus)
-            details.setIndep(2);
+            details.setCategory(2);
         else
-            details.setIndep(0);
+            details.setCategory(0);
 
         setFilmDetails(details);
     };
@@ -141,8 +141,8 @@ export default function AdminControls(props) {
                     thumbnail: filmDetails.thumbnail,
                     script: filmDetails.scriptfile,
                     captions: filmDetails.captionsfile,
-                    independent: filmDetails.getIndep() == 1,
-                    bonus: filmDetails.getIndep() == 2,
+                    independent: filmDetails.getCategory() == 1,
+                    bonus: filmDetails.getCategory() == 2,
                     "cast-new": castEditResult
                 });
                 
@@ -483,7 +483,7 @@ export default function AdminControls(props) {
                         <p style={{fontSize: 18, marginTop: 0}}>Stars: <strong>{filmDetails.getStars()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0, textAlign: "center"}}>Synopsis: <strong>{filmDetails.getSynopsis()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Order: <strong>{filmDetails.getOrder()}</strong></p>
-                        <p style={{fontSize: 18, marginTop: 0}}>Category: <strong>{filmDetails.getIndep() == 0 ? "Regular" : filmDetails.getIndep() == 1 ? "Self-Guided" : "Bonus"}</strong></p>
+                        <p style={{fontSize: 18, marginTop: 0}}>Category: <strong>{filmDetails.getCategory() == 0 ? "Regular" : filmDetails.getCategory() == 1 ? "Self-Guided" : "Bonus"}</strong></p>
                         
                         <p style={{fontSize: 18, marginTop: 0}}>Access: 
                             <strong>{

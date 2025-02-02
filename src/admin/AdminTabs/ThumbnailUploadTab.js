@@ -3,7 +3,7 @@ import { Card, CardContent, Button } from "@mui/material";
 
 export default function ThumbnailUploadTab(props) {
     return (
-        <Card>
+        <Card variant="outlined" sx={{width: 500, margin: "0 auto"}}>
             <CardContent style={{display: "flex", alignItems: "center", flexDirection: "column"}}>
                 <p style={{color: "black", fontSize: 30, marginTop: 0}}>Film ID: <strong>{props.selectedFilm}</strong></p>
                 {!props.newFilm && <p style={{color: "black", fontSize: 15, textAlign: "center", width: "70%", marginTop: -20}}>A film record with this ID already exists. You may either upload a new thumbnail or keep the current one.</p>}
