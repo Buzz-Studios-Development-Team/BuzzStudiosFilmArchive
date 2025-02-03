@@ -74,8 +74,8 @@ export default function WatchPage() {
         var docRef = doc(db, "films", id);
         var docSnap = await getDoc(docRef);
         var data = docSnap.data();
-        setNotFound(data === undefined);
-        if (data === undefined) {
+        setNotFound(data === undefined || data.semester === "Do Not Show");
+        if (data === undefined || data.semester === "Do Not Show") {
           docRef = doc(db, "films", "404");
           docSnap = await getDoc(docRef);
           data = docSnap.data();

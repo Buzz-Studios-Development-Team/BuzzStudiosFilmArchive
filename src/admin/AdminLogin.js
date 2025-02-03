@@ -21,7 +21,7 @@ const AdminLogin = () => {
 
     const actionCodeSettings = {
     url: 'https://films.buzzstudios.org/myfilms',
-    //url: 'http://localhost:3000/myfilms',
+    // url: 'http://localhost:3000/myfilms',
     handleCodeInApp: true,
     };
 
