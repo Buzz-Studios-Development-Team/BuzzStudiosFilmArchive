@@ -89,15 +89,11 @@ export default class AdminPage extends React.Component {
 
                 // Indicate whether the user has been given exec privileges.
                 var info = doc.data();
-                if (info.exec) {
-                    this.setState({Exec: true});
-                    exec = true;
-                } else {
-                    this.setState({Exec: false});
-                }
+                this.setState({Exec: info.role});
+                this.setState({Name: info.name});
 
                 // Set the current user as part of the state.
-                this.setState({User: user});
+                this.setState({User: info.role});
             });
 
             var filmArray = [];
@@ -126,7 +122,9 @@ export default class AdminPage extends React.Component {
                 <BuzzHeader/>
                 <ErrorDialog errorDialog={this.state.errorDialog}/>
                 <AdminControls 
-                    Exec={this.state.Exec} 
+                    //Exec={this.state.Exec} 
+                    Exec={this.state.Exec}
+                    Name={this.state.Name}
                     Films={this.state.Films} 
                     User={this.state.User} 
                     Requests={this.state.Requests} 

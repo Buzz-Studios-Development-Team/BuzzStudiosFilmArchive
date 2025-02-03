@@ -11,7 +11,7 @@ import { Dialog, DialogTitle, DialogContent, DialogContentText, LinearProgress }
 
 // Tool imports
 import ManageActors from '../tools/ManageActors';
-import CastEditor from '../tools/CastEditor';
+import UserManager from "../tools/UserManager";
 
 // Film tabs
 import InitDetailsTab from "./AdminTabs/InitDetailsTab";
@@ -35,6 +35,7 @@ export default function AdminControls(props) {
     const [newFilm, setNew] = React.useState(false);
     const [newFilmID, setNewFilmID] = React.useState();
 
+    const [originalDetails, setOriginalDetails] = React.useState(new Film());
     const [filmDetails, setFilmDetails] = React.useState(new Film());
 
     // State of the cast list creator tools
@@ -99,6 +100,7 @@ export default function AdminControls(props) {
             details.setCategory(0);
 
         setFilmDetails(details);
+        setOriginalDetails(details);
     };
 
     const Stage = {
@@ -153,11 +155,8 @@ export default function AdminControls(props) {
     };
 
     const deleteFilm = () => {
-        var db = getFirestore();
-        const del = async () => {
-            await deleteDoc(doc(db, "films", selectedFilm));
-        }
-        del();
+        filmDetails.setSemester("Do Not Show");
+        sendRequest();
     }
 
     const ImportFile = (type) => {
@@ -300,6 +299,12 @@ export default function AdminControls(props) {
                 }
             `}
         </style>
+
+        <br/>
+        {props.Exec && <p style={{color: "white", fontSize: 18, margin: 10, fontFamily: "Lucida Sans", textAlign: "center"}}>
+            <strong>Welcome, {props.Name}</strong>
+        </p>}
+
         <h2>Submit Film Details</h2>
         
         <div>
@@ -404,7 +409,12 @@ export default function AdminControls(props) {
                 {/* Show the actor management component */}
                 {(props.Exec) && 
                 <><h2>Manage Actors</h2>
-                <ManageActors/></>}
+                <ManageActors/><br/></>}
+
+                {/* Show the actor management component */}
+                {(props.Exec === "admin" || props.Exec === "exec") && 
+                <><h2>Manage Users</h2>
+                <UserManager Exec={props.Exec} Name={props.Name}/></>}
                 </>
             }
             
