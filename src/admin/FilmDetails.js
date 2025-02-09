@@ -16,9 +16,13 @@ export default class Film
     scriptfile = "";
     captionsfile = "";
     cast = {};
+    seasons = ['Spring', 'Summer', 'Fall', 'Winter']
+
 
     setID(newID) {
-        this.id = newID;
+        if (this.checkEmpty(newID) && this.checkLength(newID, 1, 200)) {
+            this.id = newID;
+        }
     }
 
     getID() {
@@ -26,7 +30,9 @@ export default class Film
     }
 
     setTitle(newTitle) {
-        this.title = newTitle;
+        if (this.checkEmpty(newTitle) && this.checkLength(newTitle, 1, 200)) {
+            this.title = newTitle;
+        }
     } 
 
     getTitle() {
@@ -34,7 +40,9 @@ export default class Film
     }
 
     setSemester(newSemester) {
-        this.semester = newSemester;
+        if (this.checkDate(newSemester)) {
+            this.semester = newSemester;
+        }
     }
 
     getSemester() {
@@ -42,7 +50,9 @@ export default class Film
     }
 
     setDirector(newDirector) {
-        this.director = newDirector;
+        if (this.checkEmpty(newDirector) && this.checkLength(newDirector, 1, 100)) {
+            this.director = newDirector;
+        }
     }
 
     getDirector() {
@@ -50,7 +60,9 @@ export default class Film
     }
 
     setStars(newStars) {
-        this.stars = newStars;
+        if (this.checkEmpty(newStars) && this.checkLength(newStars, 1, 1000)) {
+            this.stars = newStars;
+        }
     }
 
     getStars() {
@@ -58,7 +70,9 @@ export default class Film
     }
 
     setSynopsis(newSynopsis) {
-        this.synopsis = newSynopsis;
+        if (this.checkEmpty(newSynopsis) && this.checkLength(newSynopsis, 1, 2000)) {
+            this.synopsis = newSynopsis;
+        }
     }
 
     getSynopsis() {
@@ -66,7 +80,9 @@ export default class Film
     }
 
     setAccess(newAccess) {
-        this.access = newAccess;
+        if (this.checkEmpty(newAccess)) {
+            this.access = newAccess;
+        }
     }
 
     getAccess() {
@@ -74,7 +90,9 @@ export default class Film
     }
 
     setAccessCode(newAccessCode) {
-        this.accessCode = newAccessCode;
+        if (this.checkEmpty(newAccessCode) && this.checkLength(newAccessCode, 1, 100)) {
+            this.accessCode = newAccessCode;
+        }
     }
 
     getAccessCode() {
@@ -82,7 +100,9 @@ export default class Film
     }
 
     setOrder(newOrder) {
-        this.order = newOrder;
+        if (this.checkEmpty(newOrder)) {
+            this.order = newOrder;
+        }
     }
 
     getOrder() {
@@ -90,10 +110,51 @@ export default class Film
     }
 
     setCategory(newCategory) {
-        this.category = newCategory;
+        if (this.checkEmpty(newCategory)) {
+            this.category = newCategory;
+        }
     }
 
     getCategory() {
         return this.category;
+    }
+
+    checkNull(input) {
+        if (input != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    checkEmpty(input) {
+        if (this.checkNull(input) && input != '') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    checkLength(input, min, max) {
+        if (input.length >= min && input.length <= max) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    checkDate(input) {
+        if (input == 'Date Unknown' || 'Do Not Show') {
+            return true;
+        } else if (input.split(" ").length > 1){
+            split_input = input.split(" ")
+            if (this.seasons.contains(split_input[0]) && checkIfFourDigitNumber(split_input[1])) {
+                return true;
+            }
+        } else { return false; }
+    }
+
+    checkIfFourDigitNumber(input) {
+        return /^\d{4}$/.test(input);
     }
 }
