@@ -17,7 +17,7 @@ export default class Film
     captionsfile = "";
     cast = {};
     seasons = ['Spring', 'Summer', 'Fall', 'Winter']
-
+    languages = [];
 
     setID(newID) {
         if (this.checkEmpty(newID) && this.checkLength(newID, 1, 200)) {

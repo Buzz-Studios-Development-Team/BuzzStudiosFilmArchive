@@ -88,6 +88,7 @@ export default function AdminControls(props) {
         details.captionsfile = film.captions !== undefined ? film.captions : "";
         details.setOrder(film.order);
         details.cast = film['cast-new'];
+        details.languages = film.languages;
         
         if (film.independent !== undefined && film.independent)
             details.setCategory(1);
@@ -263,7 +264,7 @@ export default function AdminControls(props) {
                 };
     
                 var today = new Date();
-                var fileName = selectedFilm + "-captions-" + String(today.getTime()) + ".vtt";
+                var fileName = selectedFilm + "-captions-" + String(today.getTime()) + "-English.vtt";
                 const storageRef = ref(storage, "gs://buzz-studios-7f814.appspot.com/" + fileName);
                 filmDetails.captionsfile = fileName;
                 const uploadTask = uploadBytesResumable(storageRef, file, metadata);

@@ -1,5 +1,7 @@
 import React from "react";
 import { Card, CardContent, Button } from "@mui/material";
+import CaptionLanguageMenu from "../../tools/CaptionLanguageMenu";
+import { getStorage, ref, listAll } from "firebase/storage";
 
 export default function CaptionsUploadTab(props) {
     
@@ -17,6 +19,45 @@ export default function CaptionsUploadTab(props) {
         "width": 80
     }
 
+    const [captionsExist, setCaptionsExist] = React.useState(false);
+    const [languages, setLanguages] = React.useState([]);
+
+    React.useEffect(() => {
+        var captionName = props.filmDetails.captionsfile;
+        if (captionName.trim() == "") {
+            setCaptionsExist(false);
+            return;
+        } else {
+            setCaptionsExist(true);
+        }
+
+        const storage = getStorage();
+        const listRef = ref(storage, "translated-captions/");
+
+        const fetchFiles = async () => {
+            listAll(listRef)
+            .then((res) => {
+                var languages = [];
+                res.items.forEach((itemRef) => {
+                    var path = itemRef._location.path_;
+                    if (path.includes(captionName))
+                    {
+                        var match = path.match(/-(\w+)\.vtt$/);
+                        if (match) {
+                            languages.push(match[1]);
+                        }
+                    }
+                });
+                setLanguages(languages);
+                console.log(languages);
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+        fetchFiles();
+
+    }, []);
+
     return (
         <Card variant="outlined" sx={{width: 500, margin: "0 auto"}}>
             <CardContent style={{display: "flex", alignItems: "center", flexDirection: "column"}}>
@@ -33,7 +74,7 @@ export default function CaptionsUploadTab(props) {
                 </p>}
 
                 <Button onClick={() => props.ImportFile("captions")} variant="contained" style={buttonStyle}>
-                    choose a captions file
+                    upload a caption file
                 </Button>
 
                 {!props.newFilm && 
@@ -54,6 +95,8 @@ export default function CaptionsUploadTab(props) {
                         variant="contained" 
                         style={backButtonStyle}
                 >back</Button>
+
+                {(true || captionsExist) && <CaptionLanguageMenu filmDetails={props.filmDetails} existing={languages} />}
 
             </CardContent>
         </Card>
