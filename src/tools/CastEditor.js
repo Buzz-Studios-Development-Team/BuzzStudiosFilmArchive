@@ -11,47 +11,19 @@ import { getFirestore } from "firebase/firestore";
 import { doc, getDoc, getDocs, collection, query, where, setDoc, deleteDoc } from "firebase/firestore";
 import { Card, CardContent, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, Select, MenuItem, LinearProgress, InputLabel, FormControl } from "@mui/material";
 
-const CastEditor = (props) => {
-
-    var actorArray = [];
+export default function CastEditor(props) {
 
     const [cast, setCast] = React.useState([]);
-    const [actors, setActors] = React.useState([]);
     const [selectedActor, setSelectedActor] = React.useState("");
     const [roleName, setRoleName] = React.useState("");
     const [addState, setAddState] = React.useState(0);
-
-    const RetrieveActors = () => {
-        const actorList = [];
-
-        const fetch = async () => {
-            var db = getFirestore();
-
-            var getStatus = query(collection(db, "actors"));
-            var status = await getDocs(getStatus)
-
-            status.forEach((doc) => {
-                var info = doc.data();
-                info.id = doc.id;
-                actorList.push(info);
-            });
-
-            setActors(actorList);
-        }
-
-        fetch();
-    }
-
-    React.useEffect(() => {
-        RetrieveActors();
-    }, []);
 
     const handleChange = (event) => {
         setSelectedActor(event.target.value);
     };
 
     const addActor = () => {
-        cast.push({"actor": selectedActor, "role": roleName});
+        setCast([...cast, {"actor": selectedActor, "role": roleName}]);
 
         setAddState(0);
         setSelectedActor("");
@@ -59,9 +31,9 @@ const CastEditor = (props) => {
     }
 
     const getActorName = (id) => {
-        for (var actor in actors)
+        for (var actor in props.actors)
         {
-            if (actors[actor].id == id) { return actors[actor].name; }
+            if (props.actors[actor].id == id) { return props.actors[actor].name; }
         }
     }
 
@@ -74,7 +46,6 @@ const CastEditor = (props) => {
                 newCast.push(cast[i]);
             }
         }
-
         setCast(newCast);
     }
 
@@ -90,7 +61,7 @@ const CastEditor = (props) => {
                 hiddenLabel
                 onChange={handleChange}>
                 {
-                    actors.map((actor, i) => {
+                    props.actors.map((actor, i) => {
                         return (
                             <MenuItem style={{fontSize: 15}} value={actor.id}>{actor.name}</MenuItem>
                         )
@@ -132,10 +103,8 @@ const CastEditor = (props) => {
         </TableContainer>
 
         <br></br><br></br>
-        <Button onClick={() => {props.editResult(cast); props.setStage(7);}} variant="contained" style={{backgroundColor: "gray", fontSize: 18}}>Finish</Button>
+        <Button onClick={() => {props.continue(cast)}} variant="contained" style={{backgroundColor: "gray", fontSize: 18}}>Finish</Button>
 
         </>
     )
-}
-
-export default CastEditor;
+};

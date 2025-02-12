@@ -26,7 +26,7 @@ import Film from "./FilmDetails";
 export default function AdminControls(props) {
 
     // Selected film state
-    const [selectedFilm, setSelectedFilm] = React.useState("");
+    const [selectedFilm, setSelectedFilm] = React.useState(undefined);
 
     // Stage of film addition state
     const [stage, setStage] = React.useState(0);
@@ -34,13 +34,10 @@ export default function AdminControls(props) {
     // Boolean state of new film and the ID in use
     const [newFilm, setNew] = React.useState(false);
     const [newFilmID, setNewFilmID] = React.useState();
+    const [newFilmIDError, setNewFilmIDError] = React.useState(false);
 
     const [originalDetails, setOriginalDetails] = React.useState(new Film());
     const [filmDetails, setFilmDetails] = React.useState(new Film());
-
-    // State of the cast list creator tools
-    const [showCastEditor, setShowCastEditor] = React.useState(false);
-    const [castEditResult, setCastEditResult] = React.useState([]);
         
     // Upload progress bar state
     const [showProgressBar, setShowProgressBar] = React.useState(false);
@@ -145,12 +142,22 @@ export default function AdminControls(props) {
                     captions: filmDetails.captionsfile,
                     independent: filmDetails.getCategory() == 1,
                     bonus: filmDetails.getCategory() == 2,
-                    "cast-new": castEditResult
+                    "cast-new": filmDetails.cast
                 });
                 
                 setStage(Stage.FINISHED);
             }
             send();
+        }
+    };
+
+    const handleNewFilmID = (value) => {
+        setNewFilmID(value);
+        if (value.trim() !== "" && value.length < 50) {
+            setNew(true);
+            setNewFilmIDError(false);
+        } else {
+            setNewFilmIDError(true);
         }
     };
 
@@ -325,17 +332,17 @@ export default function AdminControls(props) {
                         {/* Text field for the new ID for the film */}
                         <TextField 
                             value={newFilmID} 
-                            onChange={(event) => {setNewFilmID(event.target.value); 
-                            setNew(true);}} 
+                            onChange={(event) => {handleNewFilmID(event.target.value)}} 
                             id="outlined-basic" 
                             label="Film ID" 
                             variant="outlined" 
+                            error={newFilmIDError}
                             sx={{margin: 1}} 
                         /> 
 
                         {/* Confirmation button for adding details for the film */}
                         <Button onClick={() => {
-                            if (newFilmID !== undefined) {
+                            if (newFilmID !== undefined && !newFilmIDError) {
                                 setSelectedFilm(newFilmID); 
                                 clear(); 
                                 setStage(Stage.INIT_DETAILS);
@@ -375,7 +382,7 @@ export default function AdminControls(props) {
                                 {/* Edit details of an existing film */}
                                 {(props.Exec) && 
                                 <Button onClick={() => {
-                                    if (selectedFilm !== undefined) {
+                                    if (true || (selectedFilm !== undefined)) {
                                         setStage(Stage.INIT_DETAILS)}
                                     }} 
                                     variant="contained" 
@@ -479,8 +486,6 @@ export default function AdminControls(props) {
                 Stage={Stage}
                 setStage={setStage}
                 newFilm={newFilm}
-                showCastEditor={showCastEditor}
-                setCastEditResult={setCastEditResult}
             />}
 
             {stage === Stage.REVIEW && 
@@ -507,7 +512,8 @@ export default function AdminControls(props) {
                         </p>
 
                         {filmDetails.getAccess() === "restricted" && <p style={{fontSize: 18, marginTop: 0}}>Access Code: <strong>{filmDetails.getAccessCode()}</strong></p>}
-                        <Button onClick={sendRequest} variant="contained" color="success" style={{fontSize: 18, marginTop: 10}}>submit changes</Button>
+                        <Button onClick={sendRequest} variant="contained" color="success" style={{fontSize: 15, marginTop: 10, width: 200}}>submit changes</Button>
+                        <Button onClick={() => {setStage(Stage.CAST)}} variant="contained" color="warning" style={{fontSize: 15, marginTop: 5, width: 200}}>go back</Button>
                     </CardContent>
                 </Card>
             }
