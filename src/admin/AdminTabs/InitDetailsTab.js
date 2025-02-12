@@ -13,54 +13,91 @@ export default function InitDetailsTab(props) {
     const [access, setAccess] = React.useState(props.filmDetails.getAccess());
     const [accessCode, setAccessCode] = React.useState("");
 
+    const [titleError, setTitleError] = React.useState(false);
+    const [semesterError, setSemesterError] = React.useState(false);
+    const [directorError, setDirectorError] = React.useState(false);
+    const [starError, setStarError] = React.useState(false);
+    const [synopsisError, setSynopsisError] = React.useState(false);
+    const [orderError, setOrderError] = React.useState(false);
+    const [categoryError, setCategoryError] = React.useState(false);
+    const [accessError, setAccessError] = React.useState(false);
+    const [accessCodeError, setAccessCodeError] = React.useState(false);
+
     var filmDetails = props.filmDetails;
 
     const handleTitle = (title) => {
-        filmDetails.setTitle(title);
+        var valid = filmDetails.setTitle(title);
         setTitle(title);
+        setTitleError(!valid);
     }
 
     const handleSemester = (semester) => {
-        filmDetails.setSemester(semester);
+        var valid = filmDetails.setSemester(semester);
         setSemester(semester);
+        setSemesterError(!valid);
     }
 
     const handleDirector = (director) => {
-        filmDetails.setDirector(director);
+        var valid = filmDetails.setDirector(director);
         setDirector(director);
+        setDirectorError(!valid);
     }
 
     const handleStars = (stars) => {
-        filmDetails.setStars(stars);
+        var valid = filmDetails.setStars(stars);
         setStars(stars);
+        setStarError(!valid);
     }
 
     const handleSynopsis = (synopsis) => {
-        filmDetails.setSynopsis(synopsis);
+        var valid = filmDetails.setSynopsis(synopsis);
         setSynopsis(synopsis);
+        setSynopsisError(!valid);
     }
 
     const handleOrder = (order) => {
-        filmDetails.setOrder(order);
+        var valid = filmDetails.setOrder(order);
         setOrder(order);
+        setOrderError(!valid);
     }
 
     const handleCategory = (category) => {
-        if (category >= 0 && category <= 2) {
-            filmDetails.setCategory(category);
-            setCategory(category);
-        }
+        var valid = filmDetails.setCategory(category);
+        setCategory(category);
+        setCategoryError(!valid);
     }
 
     const handleAccess = (access) => {
-        filmDetails.setAccess(access);
+        var valid = filmDetails.setAccess(access);
         setAccess(access);
+        setAccessError(!valid);
+
+        if (access === "restricted" && (filmDetails.accessCode == undefined || filmDetails.accessCode.trim() === "")) {
+            setAccessCodeError(true);
+        }
     }
 
     const handleAccessCode = (accessCode) => {
-        filmDetails.setAccessCode(accessCode);
+        var valid = filmDetails.setAccessCode(accessCode);
         setAccessCode(accessCode);
+        setAccessCodeError(!valid);
     }
+
+    const verifyAndContinue = () => {
+        if (!titleError
+            && !semesterError
+            && !directorError
+            && !starError
+            && !synopsisError
+            && !orderError
+            && !categoryError
+            && !accessError
+            && !accessCodeError
+        ) {
+            props.setStage(props.Stage.FILM_FILE)
+            props.setFilmDetails(filmDetails)
+        }
+    };
 
     return (
         <Card variant="outlined" sx={{width: 500, margin: "0 auto"}}>
@@ -73,6 +110,7 @@ export default function InitDetailsTab(props) {
                     id="outlined-basic" 
                     label="Film Title" 
                     variant="outlined" 
+                    error={titleError}
                     sx={{width: 400, margin: 1}} />
 
                 <TextField 
@@ -81,6 +119,7 @@ export default function InitDetailsTab(props) {
                     id="outlined-basic" 
                     label="Semester Produced" 
                     variant="outlined" 
+                    error={semesterError}
                     sx={{width: 400, margin: 1}} />
 
                 <TextField 
@@ -89,6 +128,7 @@ export default function InitDetailsTab(props) {
                     id="outlined-basic" 
                     label="Director's Name" 
                     variant="outlined" 
+                    error={directorError}
                     sx={{width: 400, margin: 1}} />
 
                 <TextField 
@@ -97,6 +137,7 @@ export default function InitDetailsTab(props) {
                     id="outlined-basic" 
                     label="Stars" 
                     variant="outlined" 
+                    error={starError}
                     sx={{width: 400, margin: 1}} />
 
                 <TextField 
@@ -106,15 +147,17 @@ export default function InitDetailsTab(props) {
                     label="Synopsis" 
                     variant="outlined" 
                     multiline 
+                    error={synopsisError}
                     maxRows={8} sx={{width: 400, margin: 1}} />
 
                 <TextField 
                     value={order} 
-                    onChange={(event) => handleOrder(parseInt(event.target.value) !== NaN ? parseInt(event.target.value) : 0)} 
+                    onChange={(event) => handleOrder(event.target.value)} 
                     id="outlined-basic" 
                     label="Order" 
                     variant="outlined" 
                     multiline maxRows={8} 
+                    error={orderError}
                     sx={{width: 400, margin: 1}} />
                 
                 <FormControl style={{width: 400, margin: "0 auto"}}>
@@ -125,6 +168,7 @@ export default function InitDetailsTab(props) {
                     id="select-indep-id"
                     style={{width: 400, margin: "0 auto"}}
                     label={"Category"}
+                    error={categoryError}
                     onChange={(event) => handleCategory(event.target.value)}>
                     <MenuItem value={0}>Regular</MenuItem>
                     <MenuItem value={1}>Self-Guided</MenuItem>
@@ -141,6 +185,7 @@ export default function InitDetailsTab(props) {
                     id="select-access-id"
                     style={{width: 400, margin: "0 auto"}}
                     label={"Access"}
+                    error={accessError}
                     onChange={(event) => handleAccess(event.target.value)}>
                     <MenuItem value={"released"}>Publicly Released</MenuItem>
                     <MenuItem value={"restricted"}>Access Restricted</MenuItem>
@@ -159,16 +204,25 @@ export default function InitDetailsTab(props) {
                     label="Access Code" 
                     variant="outlined" 
                     multiline 
+                    error={accessCodeError}
                     maxRows={8} sx={{width: 400, margin: 1}} />}
                 
-                <Button 
-                    onClick={() => {
-                        props.setStage(props.Stage.FILM_FILE)
-                        props.setFilmDetails(filmDetails)
-                    }} 
-                    variant="contained" 
-                    color="warning" 
-                    style={{fontSize: 18, marginTop: 10}}>Submit</Button>
+                <br/>
+                <div sx={{display: "flex", flexDirection: "horizontal"}}>
+                    <Button 
+                        onClick={() => {
+                            props.setStage(props.Stage.INIT_MENU)
+                        }} 
+                        variant="contained" 
+                        color="warning" 
+                        style={{fontSize: 15, margin: 2, backgroundColor: "#222222"}}>Back</Button>
+
+                    <Button 
+                        onClick={verifyAndContinue} 
+                        variant="contained" 
+                        color="warning" 
+                        style={{fontSize: 15, margin: 2, backgroundColor: "#222222"}}>Submit</Button>
+                </div>
                 
             </CardContent>
         </Card>

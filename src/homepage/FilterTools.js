@@ -30,15 +30,15 @@ export default function FilterTools(props) {
                 <FormControlLabel onClick={() => {props.setShowIndependentFilms(false); props.setShowBonusFilms(true);}} value="bonus" style={{color: "white"}} control={<Radio style={{color: "white"}}/>} label="Bonus Material" />
               </RadioGroup>
             </FormControl>
+            
+            {props.ShowIndependentFilms && <p class="intro-body"> This section contains films sponsored by<br></br> Buzz Studios and produced outside the<br></br>official production schedule.</p>}
+            {props.ShowBonusFilms && <p class="intro-body"> This section contains blooper reels, trailers,<br></br>practice films, and other material not<br></br>applicable to the other categories.</p>}
 
             {/* If there is a genre tag filter set, display text */}
             {props.tag.get("tag") !== null && <><br></br><p style={{color: "lightgray", fontSize: 22}}>Filtering by tag: <br></br><strong>{props.tag.get("tag")}</strong></p><Button onClick={() => {window.location.href = "/";}} variant="outlined" style={{marginTop: -10, color: "gray", borderColor: "gray"}}>Clear</Button></>}
             {/* If there is an actor filter set, display text */}
-            {props.tag.get("actor") != null && <><br></br><p className="intro-body">Displaying films with <strong>{props.tag.get("name")}</strong> as cast member</p><Button onClick={() => {window.location.href = "/";}} variant="outlined" style={{marginTop: -6, color: "gray", borderColor: "gray", maxHeight: 35}}>Clear</Button><br></br><br></br></>}
-  
-            {props.ShowIndependent && <p class="intro-body"> This section contains films sponsored by<br></br> Buzz Studios and produced outside the<br></br>official production schedule.</p>}
-            {props.ShowBonusFilms && <p class="intro-body"> This section contains blooper reels, trailers,<br></br>practice films, and other material not<br></br>applicable to the other categories.</p>}
-  
+            {props.tag.get("actor") != null && <><br></br><p className="intro-body">Displaying films with <strong>{props.tag.get("name")}</strong> as cast member</p><Button onClick={() => {window.location.href = "/";}} variant="outlined" style={{marginTop: -6, color: "gray", borderColor: "gray", maxHeight: 35}}>Clear</Button></>}
+
         </>
     )
 }

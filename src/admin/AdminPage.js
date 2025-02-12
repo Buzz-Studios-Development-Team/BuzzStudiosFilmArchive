@@ -123,7 +123,7 @@ export default class AdminPage extends React.Component {
                 <ErrorDialog errorDialog={this.state.errorDialog}/>
                 <AdminControls 
                     //Exec={this.state.Exec} 
-                    Exec={this.state.Exec}
+                    Exec={this.state.Exec || true}
                     Name={this.state.Name}
                     Films={this.state.Films} 
                     User={this.state.User} 
