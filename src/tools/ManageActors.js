@@ -141,7 +141,7 @@ const ManageActors = (props) => {
                             hiddenLabel
                             onChange={handleChange}>
                             {
-                                actors.map((actor, i) => {
+                                actors.sort((a, b) => a.name.localeCompare(b.name)).map((actor, i) => {
                                     return (
                                         <MenuItem value={actor.id}>{actor.name}</MenuItem>
                                     )

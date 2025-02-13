@@ -22,6 +22,7 @@ import CaptionsUploadTab from "./AdminTabs/CaptionsUploadTab";
 import CastUploadTab from "./AdminTabs/CastUploadTab";
 
 import Film from "./FilmDetails";
+import FilmOrderTool from "../tools/FilmOrderTool";
 
 export default function AdminControls(props) {
 
@@ -42,6 +43,8 @@ export default function AdminControls(props) {
     // Upload progress bar state
     const [showProgressBar, setShowProgressBar] = React.useState(false);
     const [progress, setProgress] = React.useState(0);
+
+    const [order, setOrder] = React.useState(0);
 
     useEffect(() => {
         // If progress reaches 100, advance the stage and hide the progress bar
@@ -82,11 +85,11 @@ export default function AdminControls(props) {
         details.setStars(film.stars);
         details.setSynopsis(film.synopsis);
         details.setAccess(film.access);
+        setOrder(film.order);
         details.filmfile = film.filmfile !== undefined ? film.filmfile : "";
         details.thumbnail = film.thumbnail !== undefined ? film.thumbnail : "";
         details.scriptfile = film.script !== undefined ? film.script : "";
         details.captionsfile = film.captions !== undefined ? film.captions : "";
-        details.setOrder(film.order);
         details.cast = film['cast-new'];
         
         if (film.independent !== undefined && film.independent)
@@ -133,7 +136,7 @@ export default function AdminControls(props) {
                     director: filmDetails.getDirector(),
                     stars: filmDetails.getStars(),
                     synopsis: filmDetails.getSynopsis(),
-                    order: filmDetails.getOrder(),
+                    order: order,
                     access: filmDetails.getAccess(),
                     accesscode: hash,
                     filmfile: filmDetails.filmfile,
@@ -419,6 +422,11 @@ export default function AdminControls(props) {
                 <ManageActors/><br/></>}
 
                 {/* Show the actor management component */}
+                {(props.Exec) && 
+                <><h2>Manage Film Order</h2>
+                <FilmOrderTool/><br/></>}
+
+                {/* Show the actor management component */}
                 {(props.Exec === "admin" || props.Exec === "exec") && 
                 <><h2>Manage Users</h2>
                 <UserManager Exec={props.Exec} Name={props.Name}/></>}
@@ -497,7 +505,6 @@ export default function AdminControls(props) {
                         <p style={{fontSize: 18, marginTop: 0}}>Director Name: <strong>{filmDetails.getDirector()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Stars: <strong>{filmDetails.getStars()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0, textAlign: "center"}}>Synopsis: <strong>{filmDetails.getSynopsis()}</strong></p>
-                        <p style={{fontSize: 18, marginTop: 0}}>Order: <strong>{filmDetails.getOrder()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Category: <strong>{filmDetails.getCategory() == 0 ? "Regular" : filmDetails.getCategory() == 1 ? "Self-Guided" : "Bonus"}</strong></p>
                         
                         <p style={{fontSize: 18, marginTop: 0}}>Access: 

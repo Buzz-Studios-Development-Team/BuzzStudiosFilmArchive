@@ -8,7 +8,7 @@ export default function IntroStatement() {
             and artists that would enrich the Georgia Tech campus with 
             its work and its welcoming environment. 22 years in, this 
             mission statement guides us all as we continue to tell the 
-            stories of our members. In order to honor our past and look 
+            stories of our members.<br/><br/>In order to honor our past and look 
             forward to our future, we have created the Buzz Studios Film 
             Archive, intended to document our club's entire body of work 
             as thoroughly as humanly possible. It is our hope that this 
