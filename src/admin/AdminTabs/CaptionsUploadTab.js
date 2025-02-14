@@ -40,7 +40,7 @@ export default function CaptionsUploadTab(props) {
                 var languages = [];
                 res.items.forEach((itemRef) => {
                     var path = itemRef._location.path_;
-                    if (path.includes(captionName))
+                    if (path.includes(captionName.substring(0, captionName.length - 12)))
                     {
                         var match = path.match(/-(\w+)\.vtt$/);
                         if (match) {

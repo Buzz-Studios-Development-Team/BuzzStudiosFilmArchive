@@ -231,7 +231,6 @@ export default function WatchPage() {
             requestScript();
           }
           if (filmData.captions !== undefined && filmData.captions !== "") {
-            requestCaptions();
 
             const storage = getStorage();
             const listRef = ref(storage, "translated-captions/");
@@ -254,6 +253,8 @@ export default function WatchPage() {
                         }
                     }
                 });
+
+                languages.push({"language": "English", "code": "en"});
 
                 const tracks = await Promise.all(
                   languages.map(async (lang) => {
@@ -331,7 +332,7 @@ export default function WatchPage() {
     const requestCaptions = (language="English", code="en") => {
       const auth = getAuth();
       var prefix = (language === "English" ? "" : "translated-captions/");
-      var url = prefix + filmData.captions.substring(0, filmData.captions.length - 11) + language + ".vtt";
+      var url = language === "English" ? filmData.captions : prefix + filmData.captions.substring(0, filmData.captions.length - 11) + language + ".vtt";
       
       return fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
         method: 'POST',
