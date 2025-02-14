@@ -122,7 +122,6 @@ export default class AdminPage extends React.Component {
                 <BuzzHeader/>
                 <ErrorDialog errorDialog={this.state.errorDialog}/>
                 <AdminControls 
-                    //Exec={this.state.Exec} 
                     Exec={this.state.Exec}
                     Name={this.state.Name}
                     Films={this.state.Films} 

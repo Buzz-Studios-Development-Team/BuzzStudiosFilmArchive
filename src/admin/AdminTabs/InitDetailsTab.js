@@ -8,7 +8,6 @@ export default function InitDetailsTab(props) {
     const [director, setDirector] = React.useState(props.filmDetails.getDirector());
     const [stars, setStars] = React.useState(props.filmDetails.getStars());
     const [synopsis, setSynopsis] = React.useState(props.filmDetails.getSynopsis());
-    const [order, setOrder] = React.useState(props.filmDetails.getOrder());
     const [category, setCategory] = React.useState(props.filmDetails.getCategory());
     const [access, setAccess] = React.useState(props.filmDetails.getAccess());
     const [accessCode, setAccessCode] = React.useState("");
@@ -18,7 +17,6 @@ export default function InitDetailsTab(props) {
     const [directorError, setDirectorError] = React.useState(false);
     const [starError, setStarError] = React.useState(false);
     const [synopsisError, setSynopsisError] = React.useState(false);
-    const [orderError, setOrderError] = React.useState(false);
     const [categoryError, setCategoryError] = React.useState(false);
     const [accessError, setAccessError] = React.useState(false);
     const [accessCodeError, setAccessCodeError] = React.useState(false);
@@ -55,12 +53,6 @@ export default function InitDetailsTab(props) {
         setSynopsisError(!valid);
     }
 
-    const handleOrder = (order) => {
-        var valid = filmDetails.setOrder(order);
-        setOrder(order);
-        setOrderError(!valid);
-    }
-
     const handleCategory = (category) => {
         var valid = filmDetails.setCategory(category);
         setCategory(category);
@@ -89,7 +81,6 @@ export default function InitDetailsTab(props) {
             && !directorError
             && !starError
             && !synopsisError
-            && !orderError
             && !categoryError
             && !accessError
             && !accessCodeError
@@ -149,18 +140,8 @@ export default function InitDetailsTab(props) {
                     multiline 
                     error={synopsisError}
                     maxRows={8} sx={{width: 400, margin: 1}} />
-
-                <TextField 
-                    value={order} 
-                    onChange={(event) => handleOrder(event.target.value)} 
-                    id="outlined-basic" 
-                    label="Order" 
-                    variant="outlined" 
-                    multiline maxRows={8} 
-                    error={orderError}
-                    sx={{width: 400, margin: 1}} />
                 
-                <FormControl style={{width: 400, margin: "0 auto"}}>
+                <FormControl style={{width: 400, marginTop: 8, margin: "0 auto"}}>
                 <InputLabel id="demo-simple-select-label">Category</InputLabel>
                 <Select
                     value={category}
@@ -177,7 +158,7 @@ export default function InitDetailsTab(props) {
                 </FormControl>
 
                 <br></br>
-                <FormControl style={{width: 400, margin: "0 auto"}}>
+                <FormControl style={{width: 400, marginTop: -5, margin: "0 auto"}}>
                 <InputLabel id="demo-simple-select-label">Access</InputLabel>
                 <Select
                     value={access}
