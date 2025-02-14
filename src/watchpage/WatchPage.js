@@ -16,6 +16,7 @@ import { useState, useEffect } from 'react';
 import {Link, useParams } from 'react-router-dom';
 import {React, useRef} from 'react';
 import BuzzHeader from "../homepage/BuzzHeader.js";
+import { getStorage, ref, listAll } from "firebase/storage";
 
 export default function WatchPage() {
     const { id } = useParams();
@@ -36,6 +37,8 @@ export default function WatchPage() {
     const [notFound, setNotFound] = useState(false);
     const [associated, setAssociated] = useState({});
     const [actors, setActors] = useState([]);
+    const [captionTracks, setCaptionTracks] = useState([]);
+    var captions = [];
   
     const videoRef = useRef();
   
@@ -228,7 +231,44 @@ export default function WatchPage() {
             requestScript();
           }
           if (filmData.captions !== undefined && filmData.captions !== "") {
-            requestCaptions();
+
+            const storage = getStorage();
+            const listRef = ref(storage, "translated-captions/");
+            const fetchFiles = async () => {
+                var languages = [];
+
+                const res = await listAll(listRef)
+                res.items.forEach((itemRef) => {
+                    var path = itemRef._location.path_;
+                    if (path.includes(filmData.captions.substring(0, filmData.captions.length - 11)))
+                    {
+                        var match = path.match(/-(\w+)\.vtt$/);
+                        if (match) {
+                          var iso = require('../tools/iso_language_codes.json');
+                          for (var i = 0; i < iso.length; i++) {
+                            if (iso[i].language === match[1]) {
+                              languages.push(iso[i]);
+                            }
+                          }
+                        }
+                    }
+                });
+
+                languages.push({"language": "English", "code": "en"});
+
+                const tracks = await Promise.all(
+                  languages.map(async (lang) => {
+                    return requestCaptions(lang.language, lang.code);
+                  })
+                );
+                console.log(tracks);
+                setCaptionTracks(tracks);
+
+                if (videoRef.current) {
+                  videoRef.current.load();
+                }
+            }
+            fetchFiles();
           }
       }
     }, [authenticated]);
@@ -289,23 +329,30 @@ export default function WatchPage() {
       });
     }
   
-    const requestCaptions = () => {
+    const requestCaptions = (language="English", code="en") => {
       const auth = getAuth();
-      fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
+      var prefix = (language === "English" ? "" : "translated-captions/");
+      var url = language === "English" ? filmData.captions : prefix + filmData.captions.substring(0, filmData.captions.length - 11) + language + ".vtt";
+      
+      return fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           "title": filmData.title,
-          "film": filmData.captions,
+          "film": url,
           "uid": auth.currentUser.uid,
           "code": usedPassword
         })
       })
       .then(response => response.json())
       .then(d => {
-        setCaptionsURL(d.url);
+        return {"url": d.url, "language": language, "code": code};
+      })
+      .catch((error) => {
+        console.log(error);
+        return null;
       });
     }
   
@@ -376,13 +423,16 @@ export default function WatchPage() {
             {filmData.access == "released" || authenticated? (
               <video ref={videoRef} crossOrigin='anonymous' playsInline controls controlsList="nodownload" class="player">
                 <source src={url}/>
-                <track
-                  label="English"
-                  kind="subtitles"
-                  srcLang="en"
-                  src={captionsURL}
-                   
-                />
+                {captionTracks !== undefined && captionTracks.map((track) => {
+                  return (
+                    <track
+                      label={track.language}
+                      kind="subtitles"
+                      srcLang={track.code}
+                      src={track.url}
+                    />
+                  )
+                })}
               </video>
             ) : filmData.access == "unavailable" || filmData.access == "preprod" || filmData.access == "prod" || filmData.access == "postprod" ? (
               <div className="coming-soon">
