@@ -31,7 +31,6 @@ export default class AdminPage extends React.Component {
         };
     }
     
-    
     componentDidMount() {
 
         // Retrieve firebase app and auth details
@@ -72,6 +71,11 @@ export default class AdminPage extends React.Component {
 
     // Retrieves all of the film records
     RetrieveFilms(user) {
+    
+        var Sandbox = process.env.REACT_APP_USERS_SANDBOX == "true";
+        var filmsCollection = process.env.REACT_APP_USE_SANDBOX ? process.env.REACT_APP_FILMS_SANDBOX : process.env.REACT_APP_FILMS_COLLECTION;
+        var actorsCollection =  process.env.REACT_APP_USE_SANDBOX ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
+        var usersCollection = process.env.REACT_APP_USE_SANDBOX ? process.env.REACT_APP_USERS_SANDBOX : process.env.REACT_APP_USERS_COLLECTION;
 
         const fetch = async () => {
             var db = getFirestore();
@@ -80,7 +84,7 @@ export default class AdminPage extends React.Component {
             // Query the users collection to see if the user is an officer or otherwise authorized to make edits. 
             // In current usage, this should be the only use case.
 
-            var getStatus = query(collection(db, "users"), where("email", "==", user));
+            var getStatus = query(collection(db, usersCollection), where("email", "==", user));
             var status = await getDocs(getStatus);
             var exec = false;
 
@@ -99,7 +103,7 @@ export default class AdminPage extends React.Component {
             var filmArray = [];
 
             // Retrieve the collection of film records
-            var docRef = collection(db, "films");
+            var docRef = collection(db, filmsCollection);
             var films = await getDocs(docRef);
 
             films.forEach((doc) => {
@@ -127,6 +131,10 @@ export default class AdminPage extends React.Component {
                     Films={this.state.Films} 
                     User={this.state.User} 
                     Requests={this.state.Requests} 
+                    Sandbox={process.env.REACT_APP_USERS_SANDBOX === "true"}
+                    FilmsCollection={process.env.REACT_APP_USE_SANDBOX ? process.env.REACT_APP_FILMS_SANDBOX : process.env.REACT_APP_FILMS_COLLECTION}
+                    ActorsCollection={process.env.REACT_APP_USE_SANDBOX ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION}
+                    UsersCollection={process.env.REACT_APP_USE_SANDBOX ? process.env.REACT_APP_USERS_SANDBOX : process.env.REACT_APP_USERS_COLLECTION}
                     Refresh={() => this.RetrieveFilms(this.state.Email)}
                 />
             </>

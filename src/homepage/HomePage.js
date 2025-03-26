@@ -33,6 +33,8 @@ const HomePage = () => {
 
     // Tag from the URL parameters
     const [tag, getTag] = useSearchParams();
+
+    const [FilmCollection, SetFilmCollection] = useState(false);
   
     // Runs when the component starts up
     useEffect(() => {
@@ -46,6 +48,9 @@ const HomePage = () => {
         appId: process.env.REACT_APP_FIREBASE_APP_ID,
         measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
       };
+
+      SetFilmCollection(process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_FILMS_SANDBOX : process.env.REACT_APP_FILMS_COLLECTION);
+      var filmcoll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_FILMS_SANDBOX : process.env.REACT_APP_FILMS_COLLECTION;
       
       // Initialize the Firebase app
       const app = initializeApp(firebaseConfig);
@@ -55,7 +60,7 @@ const HomePage = () => {
 
         // Connect to the Firestore database and query the films category, ordering by the order field
         var db = getFirestore(app);
-        var docRef = collection(db, "films");
+        var docRef = collection(db, filmcoll);
         var q = query(docRef, orderBy("order"));
 
         // Retrieve all documents from the query
