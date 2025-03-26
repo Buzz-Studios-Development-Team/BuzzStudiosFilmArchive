@@ -4,7 +4,7 @@ export default function Film(props) {
     return (
       <div className="film" style={{margin: props.condensed ? "-20px" : "0px"}} key={props.film.id}>
         <Link to={`/${props.film.id}`}>
-          <img src={`https://firebasestorage.googleapis.com/v0/b/buzz-studios-7f814.appspot.com/o/` + props.film.thumbnail + `?alt=media`} />
+          <img src={`https://firebasestorage.googleapis.com/v0/b/buzz-studios-7f814.appspot.com/o/` + (process.env.REACT_APP_USE_SANDBOX === "true" ? "sandbox%2F" : "") + props.film.thumbnail + `?alt=media`} />
           <div className="overlay">
             {
               (props.film.title.includes(":") && <h3>{props.film.title.split(":")[0] + ":"}<br></br>{props.film.title.split(":")[1]}</h3>) || !props.film.title.includes(":") && <h3>{props.film.title}</h3>

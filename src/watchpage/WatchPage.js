@@ -38,7 +38,12 @@ export default function WatchPage() {
     const [associated, setAssociated] = useState({});
     const [actors, setActors] = useState([]);
     const [captionTracks, setCaptionTracks] = useState([]);
+
+    const [filmsCollection, setFilmsCollection] = useState();
+    const [actorsCollection, setActorsCollection] = useState();
     var captions = [];
+
+    var sandbox = false;
   
     const videoRef = useRef();
   
@@ -53,6 +58,23 @@ export default function WatchPage() {
         appId: process.env.REACT_APP_FIREBASE_APP_ID,
         measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
       };
+
+      var filmsColl = "";
+      var actorsColl = "";
+
+      if (process.env.REACT_APP_USE_SANDBOX === "true") {
+        sandbox = true;
+
+        setFilmsCollection(process.env.REACT_APP_FILMS_SANDBOX);
+        filmsColl = process.env.REACT_APP_FILMS_SANDBOX;
+        setActorsCollection(process.env.REACT_APP_ACTORS_SANDBOX);
+        actorsColl =process.env.REACT_APP_ACTORS_SANDBOX;
+      } else {
+        setFilmsCollection(process.env.REACT_APP_FILMS_COLLECTION);
+        filmsColl = process.env.REACT_APP_FILMS_COLLECTION;
+        setActorsCollection(process.env.REACT_APP_ACTORS_COLLECTION);
+        actorsColl = process.env.REACT_APP_ACTORS_COLLECTION;
+      }
       
       const app = initializeApp(firebaseConfig);
       const auth = getAuth();
@@ -74,19 +96,19 @@ export default function WatchPage() {
         setActors([]);
   
         var db = getFirestore(app);
-        var docRef = doc(db, "films", id);
+        var docRef = doc(db, filmsColl, id);
         var docSnap = await getDoc(docRef);
         var data = docSnap.data();
         setNotFound(data === undefined || data.semester === "Do Not Show");
         if (data === undefined || data.semester === "Do Not Show") {
-          docRef = doc(db, "films", "404");
+          docRef = doc(db, filmsCollection, "404");
           docSnap = await getDoc(docRef);
           data = docSnap.data();
         }
   
         data['id'] = doc.id;
   
-        docRef = collection(db, "films");
+        docRef = collection(db, filmsColl);
         var q = query(docRef, orderBy("order"));
         docSnap = await getDocs(q);
         setAllFilms(docSnap);
@@ -122,18 +144,18 @@ export default function WatchPage() {
         setOtherFilms(filmsByDirector);
         setAssociated(assoc);
   
-        docRef = collection(db, "directors");
-        docSnap = await getDocs(docRef);
-        docSnap.forEach((doc) => {
-          var director = doc.data();
+        // docRef = collection(db, "directors");
+        // docSnap = await getDocs(docRef);
+        // docSnap.forEach((doc) => {
+        //   var director = doc.data();
   
-          if (names.includes(director.name)) {
-            bios.push(director);
-          }
-        });
+        //   if (names.includes(director.name)) {
+        //     bios.push(director);
+        //   }
+        // });
   
         var actorList = [];
-        docRef = collection(db, "actors");
+        docRef = collection(db, actorsColl);
         docSnap = await getDocs(docRef);
         docSnap.forEach((doc) => {
           var actor = doc.data();
@@ -154,7 +176,7 @@ export default function WatchPage() {
               },
               body: JSON.stringify({
                 "title": data.title,
-                "film": data.filmfile,
+                "film": (process.env.REACT_APP_USE_SANDBOX === "true" ? "sandbox/" : "") + data.filmfile,
                 "uid": auth.currentUser.uid
               })
             })
@@ -184,7 +206,7 @@ export default function WatchPage() {
         },
         body: JSON.stringify({
           "title": filmData.title,
-          "film": filmData.filmfile,
+          "film": (process.env.REACT_APP_USE_SANDBOX === "true" ? "sandbox/" : "") + filmData.filmfile,
           "code": password
         })
       })
@@ -318,7 +340,7 @@ export default function WatchPage() {
         },
         body: JSON.stringify({
           "title": filmData.title,
-          "film": filmData.script,
+          "film": (sandbox ? "sandbox/" : "") + filmData.script,
           "uid": auth.currentUser.uid,
           "code": usedPassword
         })
@@ -341,7 +363,7 @@ export default function WatchPage() {
         },
         body: JSON.stringify({
           "title": filmData.title,
-          "film": url,
+          "film": (sandbox ? "sandbox/" : "") + url,
           "uid": auth.currentUser.uid,
           "code": usedPassword
         })
