@@ -20,7 +20,7 @@ const AdminLogin = () => {
       };
 
     const actionCodeSettings = {
-    url: process.env.REACT_APP_USE_SANDBOX ? 'http://localhost:3000/myfilms' : 'https://films.buzzstudios.org/myfilms',
+    url: process.env.REACT_APP_USE_SANDBOX === "true" ? 'http://localhost:3000/myfilms' : 'https://films.buzzstudios.org/myfilms',
     handleCodeInApp: true,
     };
 
