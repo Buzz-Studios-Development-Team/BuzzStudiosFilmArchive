@@ -203,7 +203,7 @@ export default function AdminControls(props) {
                 var today = new Date();
                 var fileName = selectedFilm + "-" + String(today.getTime()) + ".mp4";
                 filmDetails.filmfile = fileName;
-                const storageRef = ref(storage, (props.Sandbox ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
+                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
                 const uploadTask = uploadBytesResumable(storageRef, file, metadata);
     
                 uploadTask.on('state_changed',
@@ -224,7 +224,7 @@ export default function AdminControls(props) {
     
                 var today = new Date();
                 var fileName = selectedFilm + "-thumbnail-" + String(today.getTime()) + ".png";
-                const storageRef = ref(storage, (props.Sandbox ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
+                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
                 filmDetails.thumbnail = fileName;
                 const uploadTask = uploadBytesResumable(storageRef, file, metadata);
     
@@ -246,7 +246,7 @@ export default function AdminControls(props) {
     
                 var today = new Date();
                 var fileName = selectedFilm + "-script-" + String(today.getTime()) + ".pdf";
-                const storageRef = ref(storage, (props.Sandbox ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
+                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
                 filmDetails.scriptfile = fileName;
                 const uploadTask = uploadBytesResumable(storageRef, file, metadata);
     
@@ -268,7 +268,7 @@ export default function AdminControls(props) {
     
                 var today = new Date();
                 var fileName = selectedFilm + "-captions-" + String(today.getTime()) + "-English.vtt";
-                const storageRef = ref(storage, (props.Sandbox ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
+                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
                 filmDetails.captionsfile = fileName;
                 const uploadTask = uploadBytesResumable(storageRef, file, metadata);
     
