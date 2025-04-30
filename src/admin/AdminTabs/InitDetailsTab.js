@@ -11,6 +11,8 @@ export default function InitDetailsTab(props) {
     const [category, setCategory] = React.useState(props.filmDetails.getCategory());
     const [access, setAccess] = React.useState(props.filmDetails.getAccess());
     const [accessCode, setAccessCode] = React.useState("");
+    //Note: IMDB field exclusive to edit page since most films will not have one at this point
+    const [imdb, setIMDB] = React.useState(props.filmDetails.getIMDB()); 
 
     const [titleError, setTitleError] = React.useState(false);
     const [semesterError, setSemesterError] = React.useState(false);
@@ -20,6 +22,7 @@ export default function InitDetailsTab(props) {
     const [categoryError, setCategoryError] = React.useState(false);
     const [accessError, setAccessError] = React.useState(false);
     const [accessCodeError, setAccessCodeError] = React.useState(false);
+    const [imdbError, setIMDBError] = React.useState(false);
 
     var filmDetails = props.filmDetails;
 
@@ -75,6 +78,12 @@ export default function InitDetailsTab(props) {
         setAccessCodeError(!valid);
     }
 
+    const handleIMDB = (imdb) => {
+        var valid = filmDetails.setIMDB(accessCode);
+        setIMDB(accessCode);
+        setIMDBError(!valid);
+    }
+
     const verifyAndContinue = () => {
         if (!titleError
             && !semesterError
@@ -84,6 +93,7 @@ export default function InitDetailsTab(props) {
             && !categoryError
             && !accessError
             && !accessCodeError
+            && !imdbError
         ) {
             props.setStage(props.Stage.FILM_FILE)
             props.setFilmDetails(filmDetails)
