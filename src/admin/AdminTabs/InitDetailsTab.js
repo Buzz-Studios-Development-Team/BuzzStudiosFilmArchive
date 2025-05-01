@@ -11,7 +11,6 @@ export default function InitDetailsTab(props) {
     const [category, setCategory] = React.useState(props.filmDetails.getCategory());
     const [access, setAccess] = React.useState(props.filmDetails.getAccess());
     const [accessCode, setAccessCode] = React.useState("");
-    //Note: IMDB field exclusive to edit page since most films will not have one at this point
     const [imdb, setIMDB] = React.useState(props.filmDetails.getIMDB()); 
 
     const [titleError, setTitleError] = React.useState(false);
@@ -79,8 +78,8 @@ export default function InitDetailsTab(props) {
     }
 
     const handleIMDB = (imdb) => {
-        var valid = filmDetails.setIMDB(accessCode);
-        setIMDB(accessCode);
+        var valid = filmDetails.setIMDB(imdb);
+        setIMDB(imdb);
         setIMDBError(!valid);
     }
 
@@ -150,6 +149,15 @@ export default function InitDetailsTab(props) {
                     multiline 
                     error={synopsisError}
                     maxRows={8} sx={{width: 400, margin: 1}} />
+
+                <TextField 
+                    value={imdb} 
+                    onChange={(event) => handleIMDB(event.target.value)} 
+                    id="outlined-basic" 
+                    label="IMDB Link" 
+                    variant="outlined" 
+                    error={imdbError}
+                    sx={{width: 400, margin: 1}} />
                 
                 <FormControl style={{width: 400, marginTop: 8, margin: "0 auto"}}>
                 <InputLabel id="demo-simple-select-label">Category</InputLabel>

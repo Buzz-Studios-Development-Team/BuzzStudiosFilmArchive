@@ -142,6 +142,9 @@ export default class Film
 
     setIMDB(newIMDB) {
         //Note: Need to allow empty fields since most films will not have an IMDB page
+        if (newIMDB == undefined) {
+            return false;
+        }
         if (this.checkLength(newIMDB, 0, 300)) {
             this.imdb = newIMDB;
             return true;
