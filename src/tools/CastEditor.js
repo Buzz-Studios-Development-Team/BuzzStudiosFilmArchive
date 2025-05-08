@@ -18,6 +18,23 @@ export default function CastEditor(props) {
     const [roleName, setRoleName] = React.useState("");
     const [addState, setAddState] = React.useState(0);
 
+    /*
+    useEffect(() => {
+        if (props.prevCast && props.prevCast.length > 0) {
+            setCast(props.prevCast);
+        }
+    }, [props.prevCast]);
+    */
+    /*
+    useEffect(() => {
+        if (props.previousCast && props.previousCast.length > 0) {
+          const validActorIds = new Set(props.actors.map(actor => actor.id));
+          const filtered = props.previousCast.filter(c => validActorIds.has(c.actor));
+          setCast(filtered);
+        }
+      }, [props.previousCast, props.actors]);
+    */
+
     const handleChange = (event) => {
         setSelectedActor(event.target.value);
     };

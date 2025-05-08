@@ -90,7 +90,7 @@ export default function CastUploadTab(props) {
 
                 {showCastEditor && 
                 <>
-                    <CastEditor actors={actors} continue={advance}/>
+                    <CastEditor actors={actors} prevCast={props.filmDetails.cast} continue={advance}/>
                 </>}
 
                 <Button onClick={() => {props.setStage(props.Stage.CAPTIONS)}} 

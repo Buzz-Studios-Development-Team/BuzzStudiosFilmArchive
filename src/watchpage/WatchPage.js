@@ -524,7 +524,7 @@ export default function WatchPage() {
           </TableContainer>
           </ThemeProvider></>}
   
-          {filmData["cast-new"] !== undefined && <Button onClick={() => {setShowCast(!showCast)}} style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: scriptURL !== "" ? "10px" : "25px"}} variant="contained" id="scriptDownload">{showCast ? "Hide Cast" : "Show Cast"}</Button>}
+          {filmData["cast-new"] !== undefined && filmData["cast-new"].length > 0 && <Button onClick={() => {setShowCast(!showCast)}} style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: scriptURL !== "" ? "10px" : "25px"}} variant="contained" id="scriptDownload">{showCast ? "Hide Cast" : "Show Cast"}</Button>}
           </div>}
         </div>
         <br></br>
