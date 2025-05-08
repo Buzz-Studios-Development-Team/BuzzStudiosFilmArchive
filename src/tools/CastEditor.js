@@ -61,7 +61,7 @@ export default function CastEditor(props) {
                 hiddenLabel
                 onChange={handleChange}>
                 {
-                    props.actors.map((actor, i) => {
+                    [...props.actors].sort((a,b) => a.name.localeCompare(b.name)).map((actor, i) => {
                         return (
                             <MenuItem style={{fontSize: 15}} value={actor.id}>{actor.name}</MenuItem>
                         )
