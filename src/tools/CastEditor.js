@@ -37,6 +37,13 @@ export default function CastEditor(props) {
         }
     }
 
+    const moveActor = (fromIndex, toIndex) => {
+        const newCast = [...cast];
+        const [actorToMove] = newCast.splice(fromIndex, 1);
+        newCast.splice(toIndex, 0, actorToMove);
+        setCast(newCast);
+    }
+
     const remove = (id) => {
         var newCast = [];
         for (var i = 0; i < cast.length; i++)
@@ -82,11 +89,12 @@ export default function CastEditor(props) {
                 <TableRow>
                 <TableCell><strong>Name</strong></TableCell>
                 <TableCell><strong>Role</strong></TableCell>
+                <TableCell align="center"><strong>Order</strong></TableCell>
                 <TableCell align="center"><strong>Delete</strong></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
-                {cast.map((row) => (
+                {cast.map((row, index) => (
                 <TableRow
                     key={row.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -95,7 +103,13 @@ export default function CastEditor(props) {
                     {getActorName(row.actor)}
                     </TableCell>
                     <TableCell size="small">{row.role}</TableCell>
-                    <TableCell size="small" align="center"><Button onClick={() => {remove(row.actor)}} variant="contained" style={{backgroundColor: "red", color: "white"}}><strong>X</strong></Button></TableCell>
+                    <TableCell size="small" align="center">
+                        <Button disabled={index === 0} onClick={() => {moveActor(index, index - 1)}}>↑</Button>
+                        <Button disabled={index === cast.length-1} onClick={() => {moveActor(index, index + 1)}}>↓</Button>
+                    </TableCell>
+                    <TableCell size="small" align="center">
+                        <Button onClick={() => {remove(row.actor)}} variant="contained" style={{backgroundColor: "red", color: "white"}}><strong>X</strong></Button>
+                    </TableCell>
                 </TableRow>
                 ))}
             </TableBody>
