@@ -72,10 +72,9 @@ export default class AdminPage extends React.Component {
     // Retrieves all of the film records
     RetrieveFilms(user) {
     
-        var Sandbox = process.env.REACT_APP_USERS_SANDBOX === "true";
-        var filmsCollection = Sandbox ? process.env.REACT_APP_FILMS_SANDBOX : process.env.REACT_APP_FILMS_COLLECTION;
-        var actorsCollection =  Sandbox ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
-        var usersCollection = Sandbox ? process.env.REACT_APP_USERS_SANDBOX : process.env.REACT_APP_USERS_COLLECTION;
+        var filmsCollection = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_FILMS_SANDBOX : process.env.REACT_APP_FILMS_COLLECTION;
+        var actorsCollection =  process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
+        var usersCollection = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_USERS_SANDBOX : process.env.REACT_APP_USERS_COLLECTION;
 
         const fetch = async () => {
             var db = getFirestore();

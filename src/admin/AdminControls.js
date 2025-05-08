@@ -92,6 +92,7 @@ export default function AdminControls(props) {
         details.captionsfile = film.captions !== undefined ? film.captions : "";
         details.cast = film['cast-new'];
         details.languages = film.languages;
+        details.setIMDB(film.imdb)
         
         if (film.independent !== undefined && film.independent)
             details.setCategory(1);
@@ -146,7 +147,8 @@ export default function AdminControls(props) {
                     captions: filmDetails.captionsfile,
                     independent: filmDetails.getCategory() == 1,
                     bonus: filmDetails.getCategory() == 2,
-                    "cast-new": filmDetails.cast
+                    "cast-new": filmDetails.cast,
+                    imdb: filmDetails.getIMDB()
                 });
                 
                 setStage(Stage.FINISHED);
@@ -506,6 +508,7 @@ export default function AdminControls(props) {
                         <p style={{fontSize: 18, marginTop: 0}}>Director Name: <strong>{filmDetails.getDirector()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Stars: <strong>{filmDetails.getStars()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0, textAlign: "center"}}>Synopsis: <strong>{filmDetails.getSynopsis()}</strong></p>
+                        <p style={{fontSize: 18, marginTop: 0}}>IMDb Link: <strong>{filmDetails.getIMDB()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Category: <strong>{filmDetails.getCategory() == 0 ? "Regular" : filmDetails.getCategory() == 1 ? "Self-Guided" : "Bonus"}</strong></p>
                         
                         <p style={{fontSize: 18, marginTop: 0}}>Access: 
