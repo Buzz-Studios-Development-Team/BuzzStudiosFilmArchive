@@ -494,6 +494,7 @@ export default function WatchPage() {
             </div>}
   
             {scriptURL !== "" && <Link style={{textDecoration: 'none'}} id="scriptLink" target="_blank" download to={scriptURL}><Button style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: "25px"}} variant="contained" id="scriptDownload">Download Script</Button></Link>}
+            
             </>}
   
             {showCast && <><ThemeProvider theme={darkTheme}>
