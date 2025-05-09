@@ -11,6 +11,7 @@ export default function InitDetailsTab(props) {
     const [category, setCategory] = React.useState(props.filmDetails.getCategory());
     const [access, setAccess] = React.useState(props.filmDetails.getAccess());
     const [accessCode, setAccessCode] = React.useState("");
+    const [imdb, setIMDB] = React.useState(props.filmDetails.getIMDB()); 
 
     const [titleError, setTitleError] = React.useState(false);
     const [semesterError, setSemesterError] = React.useState(false);
@@ -20,6 +21,7 @@ export default function InitDetailsTab(props) {
     const [categoryError, setCategoryError] = React.useState(false);
     const [accessError, setAccessError] = React.useState(false);
     const [accessCodeError, setAccessCodeError] = React.useState(false);
+    const [imdbError, setIMDBError] = React.useState(false);
 
     var filmDetails = props.filmDetails;
 
@@ -75,6 +77,12 @@ export default function InitDetailsTab(props) {
         setAccessCodeError(!valid);
     }
 
+    const handleIMDB = (imdb) => {
+        var valid = filmDetails.setIMDB(imdb);
+        setIMDB(imdb);
+        setIMDBError(!valid);
+    }
+
     const verifyAndContinue = () => {
         if (!titleError
             && !semesterError
@@ -84,6 +92,7 @@ export default function InitDetailsTab(props) {
             && !categoryError
             && !accessError
             && !accessCodeError
+            && !imdbError
         ) {
             props.setStage(props.Stage.FILM_FILE)
             props.setFilmDetails(filmDetails)
@@ -140,6 +149,15 @@ export default function InitDetailsTab(props) {
                     multiline 
                     error={synopsisError}
                     maxRows={8} sx={{width: 400, margin: 1}} />
+
+                <TextField 
+                    value={imdb} 
+                    onChange={(event) => handleIMDB(event.target.value)} 
+                    id="outlined-basic" 
+                    label="IMDB Link" 
+                    variant="outlined" 
+                    error={imdbError}
+                    sx={{width: 400, margin: 1}} />
                 
                 <FormControl style={{width: 400, marginTop: 8, margin: "0 auto"}}>
                 <InputLabel id="demo-simple-select-label">Category</InputLabel>

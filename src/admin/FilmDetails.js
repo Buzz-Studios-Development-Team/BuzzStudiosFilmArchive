@@ -10,6 +10,7 @@ export default class Film
     #accessCode = "";
     #order = 0;
     #category = 0;
+    #imdb = "";
 
     filmfile = "";
     thumbnail = "";
@@ -137,6 +138,22 @@ export default class Film
 
     getCategory() {
         return this.category;
+    }
+
+    setIMDB(newIMDB) {
+        //Note: Need to allow empty fields since most films will not have an IMDB page
+        if (newIMDB == undefined) {
+            return false;
+        }
+        if (this.checkLength(newIMDB, 0, 300)) {
+            this.imdb = newIMDB;
+            return true;
+        }
+        return false;
+    }
+
+    getIMDB() {
+        return this.imdb;
     }
 
     checkNull(input) {
