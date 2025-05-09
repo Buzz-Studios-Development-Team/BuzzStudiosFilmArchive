@@ -154,7 +154,7 @@ export default function InitDetailsTab(props) {
                     value={imdb} 
                     onChange={(event) => handleIMDB(event.target.value)} 
                     id="outlined-basic" 
-                    label="IMDB Link" 
+                    label="IMDb Link" 
                     variant="outlined" 
                     error={imdbError}
                     sx={{width: 400, margin: 1}} />
