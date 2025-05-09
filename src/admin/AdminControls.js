@@ -148,7 +148,7 @@ export default function AdminControls(props) {
                     independent: filmDetails.getCategory() == 1,
                     bonus: filmDetails.getCategory() == 2,
                     "cast-new": filmDetails.cast,
-                    imdb: filmDetails.getIMDB()
+                    imdb: filmDetails.getIMDB() === undefined ? "" : filmDetails.getIMDB()
                 });
                 
                 setStage(Stage.FINISHED);

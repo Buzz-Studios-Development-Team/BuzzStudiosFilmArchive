@@ -17,7 +17,7 @@ export default class Film
     scriptfile = "";
     captionsfile = "";
     cast = {};
-    seasons = ['Spring', 'Summer', 'Fall', 'Winter']
+    seasons = ['Spring', 'Summer', 'Fall']
     languages = [];
 
     setID(newID) {
@@ -143,7 +143,8 @@ export default class Film
     setIMDB(newIMDB) {
         //Note: Need to allow empty fields since most films will not have an IMDB page
         if (newIMDB == undefined) {
-            return false;
+            this.imdb = "";
+            return true;
         }
         if (this.checkLength(newIMDB, 0, 300)) {
             this.imdb = newIMDB;
