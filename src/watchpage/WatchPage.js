@@ -495,6 +495,7 @@ export default function WatchPage() {
             </div>}
               
             {scriptURL !== "" && <Link style={{textDecoration: 'none'}} id="scriptLink" target="_blank" download to={scriptURL}><Button style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: "25px"}} variant="contained" id="scriptDownload">Download Script</Button></Link>}
+            
             </>}
   
             {showCast && <><ThemeProvider theme={darkTheme}>
@@ -525,8 +526,7 @@ export default function WatchPage() {
           </TableContainer>
           </ThemeProvider></>}
   
-          {filmData["cast-new"] !== undefined && <Button onClick={() => {setShowCast(!showCast)}} style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: scriptURL !== "" ? "10px" : "25px"}} variant="contained" id="scriptDownload">{showCast ? "Hide Cast" : "Show Cast"}</Button>}
-
+          {filmData["cast-new"] !== undefined && filmData["cast-new"].length > 0 && <Button onClick={() => {setShowCast(!showCast)}} style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: scriptURL !== "" ? "10px" : "25px"}} variant="contained" id="scriptDownload">{showCast ? "Hide Cast" : "Show Cast"}</Button>}
           {filmData.imdb && filmData.imdb !== "" && <a href={filmData.imdb} style={{textDecoration: 'none'}} id="imdbLink" target="_blank"><Button style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: "25px", lineHeight: "0"}} variant="contained" id="imdbButton"><img src={imdbLogo} height="25px" margin="0" align="middle"></img></Button></a>}
 
           </div>}

@@ -24,7 +24,7 @@ const ManageActors = (props) => {
         const fetch = async () => {
             var db = getFirestore();
 
-            var getStatus = query(collection(db, "actors"));
+            var getStatus = query(collection(db, process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION));
             var status = await getDocs(getStatus)
 
             status.forEach((doc) => {
@@ -59,7 +59,7 @@ const ManageActors = (props) => {
         const send = async () => {
             var db = getFirestore();
 
-            const actorsRef = collection(db, "actors");
+            const actorsRef = collection(db, process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION);
 
             await setDoc(doc(actorsRef, id), {
                 name: actorNameField,
@@ -110,7 +110,7 @@ const ManageActors = (props) => {
     const deleteActor = () => {
         var db = getFirestore();
         const del = async () => {
-            await deleteDoc(doc(db, "actors", selectedActor));
+            await deleteDoc(doc(db, process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION, selectedActor));
         }
         del();
         RetrieveActors();

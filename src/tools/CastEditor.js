@@ -18,6 +18,23 @@ export default function CastEditor(props) {
     const [roleName, setRoleName] = React.useState("");
     const [addState, setAddState] = React.useState(0);
 
+    useEffect(() => {
+        if (props.prevCast && props.prevCast.length > 0) {
+            setCast(props.prevCast);
+        }
+    }, [props.prevCast]);
+    
+    /*
+    //Attempt to validate ids before setting the previous cast 
+    useEffect(() => {
+        if (props.previousCast && props.previousCast.length > 0) {
+          const validActorIds = new Set(props.actors.map(actor => actor.id));
+          const filtered = props.previousCast.filter(c => validActorIds.has(c.actor));
+          setCast(filtered);
+        }
+      }, [props.previousCast, props.actors]);
+    */
+
     const handleChange = (event) => {
         setSelectedActor(event.target.value);
     };
@@ -35,6 +52,13 @@ export default function CastEditor(props) {
         {
             if (props.actors[actor].id == id) { return props.actors[actor].name; }
         }
+    }
+
+    const moveActor = (fromIndex, toIndex) => {
+        const newCast = [...cast];
+        const [actorToMove] = newCast.splice(fromIndex, 1);
+        newCast.splice(toIndex, 0, actorToMove);
+        setCast(newCast);
     }
 
     const remove = (id) => {
@@ -61,7 +85,7 @@ export default function CastEditor(props) {
                 hiddenLabel
                 onChange={handleChange}>
                 {
-                    props.actors.map((actor, i) => {
+                    [...props.actors].sort((a,b) => a.name.localeCompare(b.name)).map((actor, i) => {
                         return (
                             <MenuItem style={{fontSize: 15}} value={actor.id}>{actor.name}</MenuItem>
                         )
@@ -82,11 +106,12 @@ export default function CastEditor(props) {
                 <TableRow>
                 <TableCell><strong>Name</strong></TableCell>
                 <TableCell><strong>Role</strong></TableCell>
+                <TableCell align="center"><strong>Order</strong></TableCell>
                 <TableCell align="center"><strong>Delete</strong></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
-                {cast.map((row) => (
+                {cast.map((row, index) => (
                 <TableRow
                     key={row.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -95,7 +120,13 @@ export default function CastEditor(props) {
                     {getActorName(row.actor)}
                     </TableCell>
                     <TableCell size="small">{row.role}</TableCell>
-                    <TableCell size="small" align="center"><Button onClick={() => {remove(row.actor)}} variant="contained" style={{backgroundColor: "red", color: "white"}}><strong>X</strong></Button></TableCell>
+                    <TableCell size="small" align="center">
+                        <Button disabled={index === 0} onClick={() => {moveActor(index, index - 1)}}>↑</Button>
+                        <Button disabled={index === cast.length-1} onClick={() => {moveActor(index, index + 1)}}>↓</Button>
+                    </TableCell>
+                    <TableCell size="small" align="center">
+                        <Button onClick={() => {remove(row.actor)}} variant="contained" style={{backgroundColor: "red", color: "white"}}><strong>X</strong></Button>
+                    </TableCell>
                 </TableRow>
                 ))}
             </TableBody>
