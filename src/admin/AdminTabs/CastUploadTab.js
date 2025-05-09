@@ -37,7 +37,7 @@ export default function CastUploadTab(props) {
         const fetch = async () => {
             var db = getFirestore();
 
-            var getStatus = query(collection(db, "actors"));
+            var getStatus = query(collection(db, process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION));
             var status = await getDocs(getStatus)
 
             status.forEach((doc) => {

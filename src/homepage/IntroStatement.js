@@ -19,7 +19,7 @@ export default function IntroStatement() {
             are strongly encouraged to reach out to help us realize this vision. 
             If you would like to help contribute to this archive, please reach 
             out at:<br/><br/><strong><a style={{color: "white"}} href="mailto:info@buzzstudios.org">info@buzzstudios.org</a></strong>
-            <br/><br/><br/><i>Established April 22, 2023.</i>
+            <br/><br/><br/><i>Dedicated July 1, 2023.</i>
             </p>
         </div>
     );
