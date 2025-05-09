@@ -92,7 +92,7 @@ export default function AdminControls(props) {
         details.captionsfile = film.captions !== undefined ? film.captions : "";
         details.cast = film['cast-new'];
         details.languages = film.languages;
-        details.setIMDB(film.imdb)
+        details.setIMDB(film.imdb !== undefined ? film.imdb : "");
         
         if (film.independent !== undefined && film.independent)
             details.setCategory(1);
