@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Card, CardContent, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, Select, MenuItem, LinearProgress, InputLabel, FormControl } from "@mui/material";
 import { getFirestore } from "firebase/firestore";
 import { doc, getDoc, getDocs, collection, query, where, setDoc, deleteDoc } from "firebase/firestore";
+import {formLogObject, publishLog} from "../logger/Logger.js";
 
 const ManageActors = (props) => {
     const [actorNameField, setActorNameField] = React.useState("");
@@ -140,17 +141,25 @@ const ManageActors = (props) => {
         var db = getFirestore();
         var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
 
+        var name;
+        for (var i = 0; i < actors.length; i++) {
+            if (actors[i].id === selectedActor) {
+                name = actors[i].name;
+                break;
+            }
+        }
+
         const del = async () => {
             try {
                 await deleteDoc(doc(db, coll, selectedActor));
                 publishLog(formLogObject(props.Email, 
                     props.Name, 
-                    `Deletion of actor details for id ${selectedActor} in ${coll} collection succeeded.`, 
+                    `Deletion of actor details for id ${selectedActor}, name ${name} in ${coll} collection succeeded.`, 
                     `Success`));
             } catch (error) {
                 publishLog(formLogObject(props.Email, 
                     props.Name, 
-                    `Deletion of actor details for id ${selectedActor} in ${coll} collection failed.`, 
+                    `Deletion of actor details for id ${selectedActor}, name ${name} in ${coll} collection failed.`, 
                     `Failure: ${error.message}\n\nStack: ${error.trace}`));
             }
         }

@@ -1,5 +1,6 @@
 import React from "react";
 import { TableContainer, Table, TableRow, TableCell, Select, MenuItem, Button } from "@mui/material";
+import {formLogObject, publishLog} from "../logger/Logger.js";
 
 export default function CaptionLanguageMenu(props)
 {

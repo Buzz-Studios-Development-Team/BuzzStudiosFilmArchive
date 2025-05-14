@@ -6,6 +6,7 @@ import {TableContainer} from '@mui/material';
 import {TableRow} from '@mui/material';
 import {TableCell} from '@mui/material';
 import {Table} from '@mui/material';
+import {formLogObject, publishLog} from "../logger/Logger.js";
 
 const UserManager = (props) => {
 

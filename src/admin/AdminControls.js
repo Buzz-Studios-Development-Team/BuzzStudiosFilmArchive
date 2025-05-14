@@ -229,7 +229,7 @@ export default function AdminControls(props) {
 
             publishLog(formLogObject(props.Email, 
                 props.Name, 
-                `User selected filename ${file} for upload to bucket ${bucket}`, 
+                `User selected filename ${file.name} for upload to bucket ${bucket}`, 
                 `Success`));
     
             const storage = getStorage();
@@ -252,14 +252,14 @@ export default function AdminControls(props) {
                     alert("An error has occurred. Please try again.");
                     publishLog(formLogObject(props.Email, 
                         props.Name, 
-                        `Upload of file ${filename} to ${bucket} failed`, 
+                        `Upload of file ${fileName} to ${bucket} failed`, 
                         `Failure: ${error.message}\n\nStack: ${error.trace}`));
                 }, 
                 () => {
                     console.log("Upload complete");
                     publishLog(formLogObject(props.Email, 
                         props.Name, 
-                        `Upload of file ${filename} to ${bucket} succeeded`, 
+                        `Upload of file ${fileName} to ${bucket} succeeded`, 
                         `Success`));
                 }
             );
