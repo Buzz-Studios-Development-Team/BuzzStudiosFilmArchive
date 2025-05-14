@@ -20,6 +20,28 @@ export default class Film
     seasons = ['Spring', 'Summer', 'Fall']
     languages = [];
 
+    toString() {
+        var objToReturn = {
+            "id": this.id,
+            "title": this.title,
+            "semester": this.semester,
+            "director": this.director,
+            "stars": this.stars,
+            "synopsis": this.synopsis,
+            "access": this.access,
+            "accessCode": this.accessCode,
+            "order": this.order,
+            "category": this.category,
+            "imdb": this.imdb,
+            "filmfile": this.filmfile,
+            "thumbnail": this.thumbnail,
+            "scriptfile": this.scriptfile,
+            "captionsfile": this.captionsFile,
+            "cast": this.cast
+        };
+        return JSON.stringify(objToReturn);
+    }
+
     setID(newID) {
         if (this.checkEmpty(newID) && this.checkLength(newID, 1, 200)) {
             this.id = newID;

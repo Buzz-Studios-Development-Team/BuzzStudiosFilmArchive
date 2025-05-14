@@ -24,6 +24,8 @@ import CastUploadTab from "./AdminTabs/CastUploadTab";
 import Film from "./FilmDetails";
 import FilmOrderTool from "../tools/FilmOrderTool";
 
+import { formLogObject, publishLog } from "../logger/Logger";
+
 export default function AdminControls(props) {
 
     // Selected film state
@@ -132,24 +134,35 @@ export default function AdminControls(props) {
                     var hash = t.hashSync("", salt);
                 }
 
-                await setDoc(doc(db, props.FilmsCollection, selectedFilm), {
-                    title: filmDetails.getTitle(),
-                    semester: filmDetails.getSemester(),
-                    director: filmDetails.getDirector(),
-                    stars: filmDetails.getStars(),
-                    synopsis: filmDetails.getSynopsis(),
-                    order: order,
-                    access: filmDetails.getAccess(),
-                    accesscode: hash,
-                    filmfile: filmDetails.filmfile,
-                    thumbnail: filmDetails.thumbnail,
-                    script: filmDetails.scriptfile,
-                    captions: filmDetails.captionsfile,
-                    independent: filmDetails.getCategory() == 1,
-                    bonus: filmDetails.getCategory() == 2,
-                    "cast-new": filmDetails.cast,
-                    imdb: filmDetails.getIMDB() === undefined ? "" : filmDetails.getIMDB()
-                });
+                try {
+                    await setDoc(doc(db, props.FilmsCollection, selectedFilm), {
+                        title: filmDetails.getTitle(),
+                        semester: filmDetails.getSemester(),
+                        director: filmDetails.getDirector(),
+                        stars: filmDetails.getStars(),
+                        synopsis: filmDetails.getSynopsis(),
+                        order: order,
+                        access: filmDetails.getAccess(),
+                        accesscode: hash,
+                        filmfile: filmDetails.filmfile,
+                        thumbnail: filmDetails.thumbnail,
+                        script: filmDetails.scriptfile,
+                        captions: filmDetails.captionsfile,
+                        independent: filmDetails.getCategory() == 1,
+                        bonus: filmDetails.getCategory() == 2,
+                        "cast-new": filmDetails.cast,
+                        imdb: filmDetails.getIMDB() === undefined ? "" : filmDetails.getIMDB()
+                    });
+                    publishLog(formLogObject(props.Email, 
+                        props.Name, 
+                        `Published film updates to id ${selectedFilm} in collection ${props.FilmsCollection}. New details: ${filmDetails.toString()}`, 
+                        "Success"));
+                } catch (error) {
+                    publishLog(formLogObject(props.Email, 
+                        props.Name, 
+                        `Attempted to publish film updates to id ${selectedFilm} in collection ${props.FilmsCollection}. New details: ${filmDetails.toString()}`, 
+                        `Failure: ${error.message}\n\nStack: ${error.stack}`));
+                }
                 
                 setStage(Stage.FINISHED);
             }
@@ -190,11 +203,17 @@ export default function AdminControls(props) {
     
         var file = null;
         input.type = 'file';
+        var bucket = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET;
         input.onchange = _ => {
             let files =   Array.from(input.files);
             file = files[0];
             console.log(files);
             setShowProgressBar(true);
+
+            publishLog(formLogObject(props.Email, 
+                props.Name, 
+                `User selected filename ${file} for upload to bucket ${bucket}`, 
+                `Success`));
     
             const storage = getStorage();
             if (type === "video") {
@@ -205,9 +224,9 @@ export default function AdminControls(props) {
                 var today = new Date();
                 var fileName = selectedFilm + "-" + String(today.getTime()) + ".mp4";
                 filmDetails.filmfile = fileName;
-                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
+                const storageRef = ref(storage, bucket + fileName);
                 const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-    
+
                 uploadTask.on('state_changed',
                     (snapshot) => {
                         setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
@@ -226,7 +245,7 @@ export default function AdminControls(props) {
     
                 var today = new Date();
                 var fileName = selectedFilm + "-thumbnail-" + String(today.getTime()) + ".png";
-                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
+                const storageRef = ref(storage, bucket + fileName);
                 filmDetails.thumbnail = fileName;
                 const uploadTask = uploadBytesResumable(storageRef, file, metadata);
     
@@ -248,7 +267,7 @@ export default function AdminControls(props) {
     
                 var today = new Date();
                 var fileName = selectedFilm + "-script-" + String(today.getTime()) + ".pdf";
-                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
+                const storageRef = ref(storage, bucket + fileName);
                 filmDetails.scriptfile = fileName;
                 const uploadTask = uploadBytesResumable(storageRef, file, metadata);
     
@@ -270,7 +289,7 @@ export default function AdminControls(props) {
     
                 var today = new Date();
                 var fileName = selectedFilm + "-captions-" + String(today.getTime()) + "-English.vtt";
-                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
+                const storageRef = ref(storage, bucket + fileName);
                 filmDetails.captionsfile = fileName;
                 const uploadTask = uploadBytesResumable(storageRef, file, metadata);
     
