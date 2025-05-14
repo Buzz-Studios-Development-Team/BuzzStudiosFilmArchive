@@ -188,22 +188,39 @@ export default function AdminControls(props) {
     const ImportFile = (type) => {
     
         let input = document.createElement('input');
+        var fileIdentifier = "";
+        var contentType = "";
+        var fileExtension = "";
         
         if (type == "video") {
             input.accept = ".mp4";
-        } else if (type == "image") {
+            fileIdentifier = "-";
+            contentType = "video/mp4";
+            fileExtension = ".mp4";
+        } 
+        else if (type == "image") {
             input.accept = ".png";
-        } else if (type == "document") {
+            fileIdentifier = "-thumbnail-";
+            contentType = "image/png";
+            fileExtension = ".png";
+        } 
+        else if (type == "document") {
             input.accept = ".pdf";
-        } else if (type == "captions") {
+            fileIdentifier = "-script-";
+            contentType = "application/pdf";
+            fileExtension = ".pdf";
+        } 
+        else if (type == "captions") {
             input.accept = ".vtt";
-        } else if (type == "cast") {
-            input.accept = ".json";
+            fileIdentifier = "-captions-";
+            contentType = "text/vtt";
+            fileExtension = ".vtt";
         }
     
         var file = null;
         input.type = 'file';
         var bucket = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET;
+
         input.onchange = _ => {
             let files =   Array.from(input.files);
             file = files[0];
@@ -216,96 +233,28 @@ export default function AdminControls(props) {
                 `Success`));
     
             const storage = getStorage();
-            if (type === "video") {
-                const metadata = {
-                    contentType: 'video/mp4'
-                };
-    
-                var today = new Date();
-                var fileName = selectedFilm + "-" + String(today.getTime()) + ".mp4";
-                filmDetails.filmfile = fileName;
-                const storageRef = ref(storage, bucket + fileName);
-                const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+            const metadata = {
+                contentType: contentType
+            };
 
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    }, 
-                    (error) => {
-                        alert("An error has occurred. Please try again.");
-                    }, 
-                    () => {
-                        console.log("Upload complete");
-                    }
-                );
-            } else if (type === "image") {
-                const metadata = {
-                    contentType: 'image/png'
-                };
-    
-                var today = new Date();
-                var fileName = selectedFilm + "-thumbnail-" + String(today.getTime()) + ".png";
-                const storageRef = ref(storage, bucket + fileName);
-                filmDetails.thumbnail = fileName;
-                const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-    
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    }, 
-                    (error) => {
-                        alert("Upload failed. Please try again later.");
-                    }, 
-                    () => {
-                        console.log("Upload complete");
-                    }
-                );
-            } else if (type === "document") {
-                const metadata = {
-                    contentType: 'application/pdf'
-                };
-    
-                var today = new Date();
-                var fileName = selectedFilm + "-script-" + String(today.getTime()) + ".pdf";
-                const storageRef = ref(storage, bucket + fileName);
-                filmDetails.scriptfile = fileName;
-                const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-    
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    },
-                    (error) => {
-                        alert("Upload failed. Please try again later.");
-                    },
-                    () => {
-                        console.log("Upload complete");
-                    }
-                );
-            } else if (type == "captions") {
-                const metadata = {
-                    contentType: 'text/vtt'
-                };
-    
-                var today = new Date();
-                var fileName = selectedFilm + "-captions-" + String(today.getTime()) + "-English.vtt";
-                const storageRef = ref(storage, bucket + fileName);
-                filmDetails.captionsfile = fileName;
-                const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-    
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    },
-                    (error) => {
-                        console.log(error);
-                        alert("Upload failed. Please try again later.");
-                    },
-                    () => {
-                        console.log("Upload complete");
-                    }
-                );
-            }
+            var today = new Date();
+            var fileName = selectedFilm + fileIdentifier + String(today.getTime()) + fileExtension;
+
+            filmDetails.filmfile = fileName;
+            const storageRef = ref(storage, bucket + fileName);
+            const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                }, 
+                (error) => {
+                    alert("An error has occurred. Please try again.");
+                }, 
+                () => {
+                    console.log("Upload complete");
+                }
+            );
         };
         input.click();
     }
