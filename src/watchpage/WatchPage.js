@@ -170,7 +170,7 @@ export default function WatchPage() {
         if (data.access === "released") {
           signInAnonymously(auth)
             .then(() => {
-              fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
+              fetch(process.env.REACT_APP_REQUEST_FILM_URL, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -200,7 +200,7 @@ export default function WatchPage() {
     const authenticate = () => {
       const auth = getAuth();
   
-      fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
+      fetch(process.env.REACT_APP_REQUEST_FILM_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -334,7 +334,7 @@ export default function WatchPage() {
   
     const requestScript = () => {
       const auth = getAuth();
-      fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
+      fetch(process.env.REACT_APP_REQUEST_FILM_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -357,7 +357,7 @@ export default function WatchPage() {
       var prefix = (language === "English" ? "" : "translated-captions/");
       var url = language === "English" ? filmData.captions : prefix + filmData.captions.substring(0, filmData.captions.length - 11) + language + ".vtt";
       
-      return fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
+      return fetch(process.env.REACT_APP_REQUEST_FILM_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

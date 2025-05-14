@@ -250,9 +250,17 @@ export default function AdminControls(props) {
                 }, 
                 (error) => {
                     alert("An error has occurred. Please try again.");
+                    publishLog(formLogObject(props.Email, 
+                        props.Name, 
+                        `Upload of file ${filename} to ${bucket} failed`, 
+                        `Failure: ${error.message}\n\nStack: ${error.trace}`));
                 }, 
                 () => {
                     console.log("Upload complete");
+                    publishLog(formLogObject(props.Email, 
+                        props.Name, 
+                        `Upload of file ${filename} to ${bucket} succeeded`, 
+                        `Success`));
                 }
             );
         };
@@ -390,17 +398,17 @@ export default function AdminControls(props) {
                 {/* Show the actor management component */}
                 {(props.Exec) && 
                 <><h2>Manage Actors</h2>
-                <ManageActors/><br/></>}
+                <ManageActors Name={props.Name} Email={props.Email}/><br/></>}
 
                 {/* Show the actor management component */}
                 {(props.Exec) && 
                 <><h2>Manage Film Order</h2>
-                <FilmOrderTool/><br/></>}
+                <FilmOrderTool Name={props.Name} Email={props.Email}/><br/></>}
 
                 {/* Show the actor management component */}
                 {(props.Exec === "admin" || props.Exec === "exec") && 
                 <><h2>Manage Users</h2>
-                <UserManager Exec={props.Exec} Name={props.Name}/></>}
+                <UserManager Exec={props.Exec} Name={props.Name} Email={props.Email}/></>}
                 </>
             }
             
@@ -455,6 +463,8 @@ export default function AdminControls(props) {
                 setStage={setStage}
                 ImportFile={ImportFile}
                 newFilm={newFilm}
+                Name={props.Name}
+                Email={props.Email}
             />}
 
             {stage === Stage.CAST && 

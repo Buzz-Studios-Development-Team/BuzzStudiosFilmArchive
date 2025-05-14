@@ -24,14 +24,27 @@ const ManageActors = (props) => {
         const fetch = async () => {
             var db = getFirestore();
 
-            var getStatus = query(collection(db, process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION));
-            var status = await getDocs(getStatus)
+            try {
+                var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
+                var getStatus = query(collection(db, coll));
+                var status = await getDocs(getStatus)
 
-            status.forEach((doc) => {
-                var info = doc.data();
-                info.id = doc.id;
-                actorList.push(info);
-            });
+                status.forEach((doc) => {
+                    var info = doc.data();
+                    info.id = doc.id;
+                    actorList.push(info);
+                });
+
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Retrieved ${coll} collection for ManageActors`, 
+                    `Success`));
+            } catch (error) {
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Retrieval of ${coll} collection by ManageActors failed`, 
+                    `Failure: ${error.message}\n\nStack: ${error.trace}`));
+            }
 
             setActors(actorList);
         }
@@ -58,14 +71,30 @@ const ManageActors = (props) => {
 
         const send = async () => {
             var db = getFirestore();
+            var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
+            var obj = {
+                "name": actorNameField,
+                "imdb": imdbField,
+                "site": siteField
+            }
 
-            const actorsRef = collection(db, process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION);
-
-            await setDoc(doc(actorsRef, id), {
-                name: actorNameField,
-                imdb: imdbField,
-                site: siteField
-            });
+            try {
+                const actorsRef = collection(db, coll);
+                await setDoc(doc(actorsRef, id), {
+                    name: actorNameField,
+                    imdb: imdbField,
+                    site: siteField
+                });
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Successfully confirmed actor details for id ${id} in ${coll} collection. Data: ${JSON.stringify(obj)}`, 
+                    `Success`));
+            } catch (error) {
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Confirmation of actor details for id ${id} in ${coll} collection failed. Attempted: ${JSON.stringify(obj)}`, 
+                    `Failure: ${error.message}\n\nStack: ${error.trace}`));
+            }
             
         }
         send();
@@ -109,8 +138,21 @@ const ManageActors = (props) => {
 
     const deleteActor = () => {
         var db = getFirestore();
+        var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
+
         const del = async () => {
-            await deleteDoc(doc(db, process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION, selectedActor));
+            try {
+                await deleteDoc(doc(db, coll, selectedActor));
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Deletion of actor details for id ${selectedActor} in ${coll} collection succeeded.`, 
+                    `Success`));
+            } catch (error) {
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Deletion of actor details for id ${selectedActor} in ${coll} collection failed.`, 
+                    `Failure: ${error.message}\n\nStack: ${error.trace}`));
+            }
         }
         del();
         RetrieveActors();

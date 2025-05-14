@@ -22,16 +22,28 @@ const UserManager = (props) => {
         const fetch = async () => {
             var db = getFirestore();
 
-            var getStatus = query(collection(db, "users"));
-            var status = await getDocs(getStatus)
+            try {
+                var getStatus = query(collection(db, "users"));
+                var status = await getDocs(getStatus)
 
-            status.forEach((doc) => {
-                var info = doc.data();
-                info.id = doc.id;
-                userList.push(info);
-            });
+                status.forEach((doc) => {
+                    var info = doc.data();
+                    info.id = doc.id;
+                    userList.push(info);
+                });
 
-            setUsers(userList);
+                setUsers(userList);
+
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Successfully requested content of collection users`, 
+                    `Success`));
+            } catch (error) {
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Requesting content of collection users failed`, 
+                    `Failure: ${error.message}\n\nStack: ${error.trace}`));
+            }
         }
 
         fetch();
@@ -63,15 +75,29 @@ const UserManager = (props) => {
         }
 
         const send = async () => {
-            var db = getFirestore();
+            try {
+                var db = getFirestore();
+                const usersRef = collection(db, "users");
 
-            const usersRef = collection(db, "users");
+                var obj = {
+                    "name": userNameField,
+                    "email": userEmailField,
+                    "role": userRole
+                }
 
-            await setDoc(doc(usersRef, userEmailField), {
-                name: userNameField,
-                email: userEmailField,
-                role: userRole
-            });
+                await setDoc(doc(usersRef, userEmailField), obj);
+
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Set user document with content ${JSON.stringify(obj)}`, 
+                    `Success`));
+            } 
+            catch (error) {
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Setting user document with content ${JSON.stringify(obj)} failed`, 
+                    `Failure: ${error.message}\n\nStack: ${error.trace}`));
+            }
             
         }
         send();
@@ -82,9 +108,22 @@ const UserManager = (props) => {
 
     const deleteUser = (target) => {
         const send = async () => {
-            var db = getFirestore();
-            const usersRef = collection(db, "users");
-            await deleteDoc(doc(usersRef, target.email));
+            try {
+                var db = getFirestore();
+                const usersRef = collection(db, "users");
+                await deleteDoc(doc(usersRef, target.email));
+
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Deletion of user with id ${target.email} succeeded`, 
+                    `Success`));
+            } 
+            catch (error) {
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Deletion of user with id ${target.email} failed`, 
+                    `Failure: ${error.message}\n\nStack: ${error.trace}`));
+            }
         }
         send();
 
