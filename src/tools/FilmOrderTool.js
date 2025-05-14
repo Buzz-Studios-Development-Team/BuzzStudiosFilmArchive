@@ -19,26 +19,40 @@ export default function FilmOrderTool(props) {
 
     const RetrieveSemesters = () => {
         const fetch = async () => {
-            var db = getFirestore();
-            var getStatus = query(collection(db, "films"));
-            var status = await getDocs(getStatus);
+            try {
+                var db = getFirestore();
+                var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_FILMS_SANDBOX : process.env.REACT_APP_FILMS_COLLECTION;
+                var getStatus = query(collection(db, coll));
+                var status = await getDocs(getStatus);
 
-            var semesters = [];
-            status.forEach((doc) => {
+                var semesters = [];
+                status.forEach((doc) => {
 
-                var film = doc.data();
-                if (!semesters.includes(film.semester) && film.semester !== "Do Not Show") {
-                    semesters.push(film.semester);
-                }
-            });
-            setSemesters(sortSemesters(semesters));
+                    var film = doc.data();
+                    if (!semesters.includes(film.semester) && film.semester !== "Do Not Show") {
+                        semesters.push(film.semester);
+                    }
+                });
+                setSemesters(sortSemesters(semesters));
+
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Successfully retrieved ${coll} collection for film order tool to determine semesters`, 
+                    `Success`));
+            }
+            catch (error) {
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Failed to retrieve ${coll} collection for film order tool to determine semesters`, 
+                    `Failure: ${error}`));
+            }
         }
 
         fetch();
     };
 
     const RetrieveFilms = (semester) => {
-        var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
+        var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_FILMS_SANDBOX : process.env.REACT_APP_FILMS_COLLECTION;
         const fetch = async () => {
             var db = getFirestore();
             var getStatus = query(
@@ -60,13 +74,13 @@ export default function FilmOrderTool(props) {
 
                 publishLog(formLogObject(props.Email, 
                     props.Name, 
-                    `Successfully retrieved ${coll} collection for film order tool.`, 
+                    `Successfully retrieved ${coll} collection for film order tool for semester ${semester}`, 
                     `Success`));
 
             } catch (error) {
                 publishLog(formLogObject(props.Email, 
                     props.Name, 
-                    `Retrieval of ${coll} collection for film order tool failed.`, 
+                    `Retrieval of ${coll} collection for film order tool failed for semester ${semester}`, 
                     `Failure: ${error.message}\n\nStack: ${error.trace}`));
             }
         }
@@ -132,9 +146,23 @@ export default function FilmOrderTool(props) {
 
     const confirmOrder = () => {
         const firestore = getFirestore();
-        for (var i = 0; i < sortedFilms.length; i++) {
-            var ref = doc(firestore, "films", sortedFilms[i].id);
-            updateDoc(ref, { order: i });
+        var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_FILMS_SANDBOX : process.env.REACT_APP_FILMS_COLLECTION;
+        for (let i = 0; i < sortedFilms.length; i++) {
+            let ref = doc(firestore, coll, sortedFilms[i].id);
+
+            updateDoc(ref, { order: i })
+            .then(() => {
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Updated order of film ${sortedFilms[i].id} to ${i}`, 
+                    `Success`));
+            })
+            .catch((error) => {
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Could not update order of film ${sortedFilms[i].id} to ${i}`, 
+                    `Failure: ${error.message}\n\nStack: ${error.trace}`));
+            });
         }    
 
         setSemester(undefined);
