@@ -62,7 +62,8 @@ export default class AdminPage extends React.Component {
                 this.setState({Email: auth.currentUser.email});
             })
             .catch((error) => {
-                publishLog(formLogObject(email, "None", `Failed to authenticate one-time link for ${email}`, `Failure: ${error}`));
+                var log = formLogObject(email !== null ? email : "null", "None", `Failed to authenticate one-time link for ${email}`, `Failure: ${error}`);
+                publishLog(log);
 
                 // If there's been an error, bring up the error dialog and force the user to close out
                 if (!already) {
@@ -87,40 +88,50 @@ export default class AdminPage extends React.Component {
             // Query the users collection to see if the user is an officer or otherwise authorized to make edits. 
             // In current usage, this should be the only use case.
 
-            var getStatus = query(collection(db, usersCollection), where("email", "==", user));
-            var status = await getDocs(getStatus);
-            var exec = false;
+            try {
+                var getStatus = query(collection(db, usersCollection), where("email", "==", user));
+                var status = await getDocs(getStatus);
+                var exec = false;
 
-            // Once the matching users have been queried, open the matching one.
-            status.forEach((doc) => {
+                // Once the matching users have been queried, open the matching one.
+                status.forEach((doc) => {
 
-                // Indicate whether the user has been given exec privileges.
-                var info = doc.data();
-                this.setState({Exec: info.role});
-                this.setState({Name: info.name});
+                    // Indicate whether the user has been given exec privileges.
+                    var info = doc.data();
+                    this.setState({Exec: info.role});
+                    this.setState({Name: info.name});
 
-                // Set the current user as part of the state.
-                this.setState({User: info.role});
+                    // Set the current user as part of the state.
+                    this.setState({User: info.role});
+                });
 
                 publishLog(formLogObject(this.state.Email, this.state.Name, `Retrieved user information to verify access status`, "Success"));
-            });
+            }
+            catch (error) {
+                publishLog(formLogObject(this.state.Email, this.state.Name, `Failed to retrieve user information to verify access status`, `Failure: ${error}`));
+            }
 
-            var filmArray = [];
+            try {
+                var filmArray = [];
 
-            // Retrieve the collection of film records
-            var docRef = collection(db, filmsCollection);
-            var films = await getDocs(docRef);
+                // Retrieve the collection of film records
+                var docRef = collection(db, filmsCollection);
+                var films = await getDocs(docRef);
 
-            films.forEach((doc) => {
-                // For each film, associate its ID and add to array
-                var film = doc.data();
-                film.id = doc.id;
-                filmArray.push(film);
-            });
+                films.forEach((doc) => {
+                    // For each film, associate its ID and add to array
+                    var film = doc.data();
+                    film.id = doc.id;
+                    filmArray.push(film);
+                });
 
-            // Set the current state with the completed list of films with IDs added
-            this.setState({Films: filmArray});
-            publishLog(formLogObject(this.state.Email, this.state.Name, `Retrieved films from collection ${filmsCollection}`, "Success"));
+                // Set the current state with the completed list of films with IDs added
+                this.setState({Films: filmArray});
+                publishLog(formLogObject(this.state.Email, this.state.Name, `Retrieved films from collection ${filmsCollection}`, "Success"));
+            }
+            catch (error) {
+                publishLog(formLogObject(this.state.Email, this.state.Name, `Failed to retrieve films from collection ${filmsCollection}`, `Failure: ${error}`));
+            }
         }
 
         fetch();
