@@ -11,6 +11,8 @@ import ErrorDialog from '../tools/ErrorDialog';
 import BuzzHeader from '../homepage/BuzzHeader';
 import AdminControls from './AdminControls';
 
+import {formLogObject, publishLog} from '../logger/Logger.js';
+
 export default class AdminPage extends React.Component {
     constructor(props) {
         super(props);
@@ -52,6 +54,7 @@ export default class AdminPage extends React.Component {
             // Attempt to authenticate using the URL, which contains the keys needed.
             signInWithEmailLink(auth, email, window.location.href)
             .then((result) => {
+                publishLog(formLogObject(email, "None", `Authenticated one-time link for ${email} successfully`, "Success"));
 
                 // If successful, clear out the user's email address and retrieve the films
                 window.localStorage.removeItem('emailForSignIn');
@@ -59,6 +62,7 @@ export default class AdminPage extends React.Component {
                 this.setState({Email: auth.currentUser.email});
             })
             .catch((error) => {
+                publishLog(formLogObject(email, "None", `Failed to authenticate one-time link for ${email}`, `Failure: ${error}`));
 
                 // If there's been an error, bring up the error dialog and force the user to close out
                 if (!already) {
@@ -97,6 +101,8 @@ export default class AdminPage extends React.Component {
 
                 // Set the current user as part of the state.
                 this.setState({User: info.role});
+
+                publishLog(formLogObject(this.state.Email, this.state.Name, `Retrieved user information to verify access status`, "Success"));
             });
 
             var filmArray = [];
@@ -114,6 +120,7 @@ export default class AdminPage extends React.Component {
 
             // Set the current state with the completed list of films with IDs added
             this.setState({Films: filmArray});
+            publishLog(formLogObject(this.state.Email, this.state.Name, `Retrieved films from collection ${filmsCollection}`, "Success"));
         }
 
         fetch();
@@ -129,6 +136,7 @@ export default class AdminPage extends React.Component {
                     Name={this.state.Name}
                     Films={this.state.Films} 
                     User={this.state.User} 
+                    Email={this.state.Email}
                     Requests={this.state.Requests} 
                     Sandbox={process.env.REACT_APP_USERS_SANDBOX === "true"}
                     FilmsCollection={process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_FILMS_SANDBOX : process.env.REACT_APP_FILMS_COLLECTION}

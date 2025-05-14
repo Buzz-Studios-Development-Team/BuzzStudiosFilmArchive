@@ -8,6 +8,8 @@ import { TableContainer, TableRow, TableCell, Table, TableHead } from "@mui/mate
 
 import HomePage from "../homepage/HomePage";
 
+import { formLogObject, publishLog } from "../logger/Logger.js";
+
 export default function FilmOrderTool(props) {
 
     const [semester, setSemester] = React.useState();
@@ -36,24 +38,37 @@ export default function FilmOrderTool(props) {
     };
 
     const RetrieveFilms = (semester) => {
+        var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
         const fetch = async () => {
             var db = getFirestore();
             var getStatus = query(
-                collection(db, "films"), 
+                collection(db, coll), 
                 where("semester", "==", semester)
             );
-            var status = await getDocs(getStatus);
 
-            var films = [];
-            status.forEach((doc) => {
+            try {
+                var status = await getDocs(getStatus);
+                var films = [];
+                status.forEach((doc) => {
+                    var film = doc.data();
+                    film.id = doc.id;
+                    films.push(film);
+                });
 
-                var film = doc.data();
-                film.id = doc.id;
-                films.push(film);
-            });
+                setSemesterFilms(films);
+                setSortedFilms([]);
 
-            setSemesterFilms(films);
-            setSortedFilms([]);
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Successfully retrieved ${coll} collection for film order tool.`, 
+                    `Success`));
+
+            } catch (error) {
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Retrieval of ${coll} collection for film order tool failed.`, 
+                    `Failure: ${error.message}\n\nStack: ${error.trace}`));
+            }
         }
 
         fetch();

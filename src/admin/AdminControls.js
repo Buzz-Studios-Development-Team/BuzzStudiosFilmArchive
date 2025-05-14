@@ -24,6 +24,8 @@ import CastUploadTab from "./AdminTabs/CastUploadTab";
 import Film from "./FilmDetails";
 import FilmOrderTool from "../tools/FilmOrderTool";
 
+import { formLogObject, publishLog } from "../logger/Logger";
+
 export default function AdminControls(props) {
 
     // Selected film state
@@ -132,24 +134,35 @@ export default function AdminControls(props) {
                     var hash = t.hashSync("", salt);
                 }
 
-                await setDoc(doc(db, props.FilmsCollection, selectedFilm), {
-                    title: filmDetails.getTitle(),
-                    semester: filmDetails.getSemester(),
-                    director: filmDetails.getDirector(),
-                    stars: filmDetails.getStars(),
-                    synopsis: filmDetails.getSynopsis(),
-                    order: order,
-                    access: filmDetails.getAccess(),
-                    accesscode: hash,
-                    filmfile: filmDetails.filmfile,
-                    thumbnail: filmDetails.thumbnail,
-                    script: filmDetails.scriptfile,
-                    captions: filmDetails.captionsfile,
-                    independent: filmDetails.getCategory() == 1,
-                    bonus: filmDetails.getCategory() == 2,
-                    "cast-new": filmDetails.cast,
-                    imdb: filmDetails.getIMDB() === undefined ? "" : filmDetails.getIMDB()
-                });
+                try {
+                    await setDoc(doc(db, props.FilmsCollection, selectedFilm), {
+                        title: filmDetails.getTitle(),
+                        semester: filmDetails.getSemester(),
+                        director: filmDetails.getDirector(),
+                        stars: filmDetails.getStars(),
+                        synopsis: filmDetails.getSynopsis(),
+                        order: order,
+                        access: filmDetails.getAccess(),
+                        accesscode: hash,
+                        filmfile: filmDetails.filmfile,
+                        thumbnail: filmDetails.thumbnail,
+                        script: filmDetails.scriptfile,
+                        captions: filmDetails.captionsfile,
+                        independent: filmDetails.getCategory() == 1,
+                        bonus: filmDetails.getCategory() == 2,
+                        "cast-new": filmDetails.cast,
+                        imdb: filmDetails.getIMDB() === undefined ? "" : filmDetails.getIMDB()
+                    });
+                    publishLog(formLogObject(props.Email, 
+                        props.Name, 
+                        `Published film updates to id ${selectedFilm} in collection ${props.FilmsCollection}. New details: ${filmDetails.toString()}`, 
+                        "Success"));
+                } catch (error) {
+                    publishLog(formLogObject(props.Email, 
+                        props.Name, 
+                        `Attempted to publish film updates to id ${selectedFilm} in collection ${props.FilmsCollection}. New details: ${filmDetails.toString()}`, 
+                        `Failure: ${error.message}\n\nStack: ${error.stack}`));
+                }
                 
                 setStage(Stage.FINISHED);
             }
@@ -175,118 +188,81 @@ export default function AdminControls(props) {
     const ImportFile = (type) => {
     
         let input = document.createElement('input');
+        var fileIdentifier = "";
+        var contentType = "";
+        var fileExtension = "";
         
         if (type == "video") {
             input.accept = ".mp4";
-        } else if (type == "image") {
+            fileIdentifier = "-";
+            contentType = "video/mp4";
+            fileExtension = ".mp4";
+        } 
+        else if (type == "image") {
             input.accept = ".png";
-        } else if (type == "document") {
+            fileIdentifier = "-thumbnail-";
+            contentType = "image/png";
+            fileExtension = ".png";
+        } 
+        else if (type == "document") {
             input.accept = ".pdf";
-        } else if (type == "captions") {
+            fileIdentifier = "-script-";
+            contentType = "application/pdf";
+            fileExtension = ".pdf";
+        } 
+        else if (type == "captions") {
             input.accept = ".vtt";
-        } else if (type == "cast") {
-            input.accept = ".json";
+            fileIdentifier = "-captions-";
+            contentType = "text/vtt";
+            fileExtension = ".vtt";
         }
     
         var file = null;
         input.type = 'file';
+        var bucket = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET;
+
         input.onchange = _ => {
             let files =   Array.from(input.files);
             file = files[0];
             console.log(files);
             setShowProgressBar(true);
+
+            publishLog(formLogObject(props.Email, 
+                props.Name, 
+                `User selected filename ${file.name} for upload to bucket ${bucket}`, 
+                `Success`));
     
             const storage = getStorage();
-            if (type === "video") {
-                const metadata = {
-                    contentType: 'video/mp4'
-                };
-    
-                var today = new Date();
-                var fileName = selectedFilm + "-" + String(today.getTime()) + ".mp4";
-                filmDetails.filmfile = fileName;
-                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
-                const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-    
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    }, 
-                    (error) => {
-                        alert("An error has occurred. Please try again.");
-                    }, 
-                    () => {
-                        console.log("Upload complete");
-                    }
-                );
-            } else if (type === "image") {
-                const metadata = {
-                    contentType: 'image/png'
-                };
-    
-                var today = new Date();
-                var fileName = selectedFilm + "-thumbnail-" + String(today.getTime()) + ".png";
-                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
-                filmDetails.thumbnail = fileName;
-                const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-    
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    }, 
-                    (error) => {
-                        alert("Upload failed. Please try again later.");
-                    }, 
-                    () => {
-                        console.log("Upload complete");
-                    }
-                );
-            } else if (type === "document") {
-                const metadata = {
-                    contentType: 'application/pdf'
-                };
-    
-                var today = new Date();
-                var fileName = selectedFilm + "-script-" + String(today.getTime()) + ".pdf";
-                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
-                filmDetails.scriptfile = fileName;
-                const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-    
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    },
-                    (error) => {
-                        alert("Upload failed. Please try again later.");
-                    },
-                    () => {
-                        console.log("Upload complete");
-                    }
-                );
-            } else if (type == "captions") {
-                const metadata = {
-                    contentType: 'text/vtt'
-                };
-    
-                var today = new Date();
-                var fileName = selectedFilm + "-captions-" + String(today.getTime()) + "-English.vtt";
-                const storageRef = ref(storage, (process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_SANDBOX_BUCKET : process.env.REACT_APP_PROD_BUCKET) + fileName);
-                filmDetails.captionsfile = fileName;
-                const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-    
-                uploadTask.on('state_changed',
-                    (snapshot) => {
-                        setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    },
-                    (error) => {
-                        console.log(error);
-                        alert("Upload failed. Please try again later.");
-                    },
-                    () => {
-                        console.log("Upload complete");
-                    }
-                );
-            }
+            const metadata = {
+                contentType: contentType
+            };
+
+            var today = new Date();
+            var fileName = selectedFilm + fileIdentifier + String(today.getTime()) + fileExtension;
+
+            filmDetails.filmfile = fileName;
+            const storageRef = ref(storage, bucket + fileName);
+            const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    setProgress((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                }, 
+                (error) => {
+                    alert("An error has occurred. Please try again.");
+                    publishLog(formLogObject(props.Email, 
+                        props.Name, 
+                        `Upload of file ${fileName} to ${bucket} failed`, 
+                        `Failure: ${error.message}\n\nStack: ${error.trace}`));
+                }, 
+                () => {
+                    console.log("Upload complete");
+                    publishLog(formLogObject(props.Email, 
+                        props.Name, 
+                        `Upload of file ${fileName} to ${bucket} succeeded`, 
+                        `Success`));
+                }
+            );
         };
         input.click();
     }
@@ -422,17 +398,17 @@ export default function AdminControls(props) {
                 {/* Show the actor management component */}
                 {(props.Exec) && 
                 <><h2>Manage Actors</h2>
-                <ManageActors/><br/></>}
+                <ManageActors Name={props.Name} Email={props.Email}/><br/></>}
 
                 {/* Show the actor management component */}
                 {(props.Exec) && 
                 <><h2>Manage Film Order</h2>
-                <FilmOrderTool/><br/></>}
+                <FilmOrderTool Name={props.Name} Email={props.Email}/><br/></>}
 
                 {/* Show the actor management component */}
                 {(props.Exec === "admin" || props.Exec === "exec") && 
                 <><h2>Manage Users</h2>
-                <UserManager Exec={props.Exec} Name={props.Name}/></>}
+                <UserManager Exec={props.Exec} Name={props.Name} Email={props.Email}/></>}
                 </>
             }
             
@@ -487,6 +463,8 @@ export default function AdminControls(props) {
                 setStage={setStage}
                 ImportFile={ImportFile}
                 newFilm={newFilm}
+                Name={props.Name}
+                Email={props.Email}
             />}
 
             {stage === Stage.CAST && 

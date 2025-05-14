@@ -170,7 +170,7 @@ export default function WatchPage() {
         if (data.access === "released") {
           signInAnonymously(auth)
             .then(() => {
-              fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
+              fetch(process.env.REACT_APP_REQUEST_FILM_URL, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -200,7 +200,7 @@ export default function WatchPage() {
     const authenticate = () => {
       const auth = getAuth();
   
-      fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
+      fetch(process.env.REACT_APP_REQUEST_FILM_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -334,7 +334,7 @@ export default function WatchPage() {
   
     const requestScript = () => {
       const auth = getAuth();
-      fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
+      fetch(process.env.REACT_APP_REQUEST_FILM_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -357,7 +357,7 @@ export default function WatchPage() {
       var prefix = (language === "English" ? "" : "translated-captions/");
       var url = language === "English" ? filmData.captions : prefix + filmData.captions.substring(0, filmData.captions.length - 11) + language + ".vtt";
       
-      return fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/request-film', {
+      return fetch(process.env.REACT_APP_REQUEST_FILM_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -527,7 +527,7 @@ export default function WatchPage() {
           </ThemeProvider></>}
   
           {filmData["cast-new"] !== undefined && filmData["cast-new"].length > 0 && <Button onClick={() => {setShowCast(!showCast)}} style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: scriptURL !== "" ? "10px" : "25px"}} variant="contained" id="scriptDownload">{showCast ? "Hide Cast" : "Show Cast"}</Button>}
-          {filmData.imdb && filmData.imdb !== "" && <a href={filmData.imdb} style={{textDecoration: 'none'}} id="imdbLink" target="_blank"><Button style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: "25px", lineHeight: "0"}} variant="contained" id="imdbButton"><img src={imdbLogo} height="25px" margin="0" align="middle"></img></Button></a>}
+          {filmData.imdb && filmData.imdb !== "" && <a href={filmData.imdb} style={{textDecoration: 'none'}} id="imdbLink" target="_blank"><Button style={{margin: "0 auto", width: 80, backgroundColor: "black", display: "block", marginTop: "25px", lineHeight: "0"}} variant="contained" id="imdbButton"><img src={imdbLogo} height="25px" margin="0" align="middle"></img></Button></a>}
 
           </div>}
         </div>

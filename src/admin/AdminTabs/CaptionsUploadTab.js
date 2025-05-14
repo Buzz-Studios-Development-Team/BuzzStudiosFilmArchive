@@ -96,7 +96,7 @@ export default function CaptionsUploadTab(props) {
                         style={backButtonStyle}
                 >back</Button>
 
-                {(true || captionsExist) && <CaptionLanguageMenu filmDetails={props.filmDetails} existing={languages} />}
+                {(true || captionsExist) && <CaptionLanguageMenu Name={props.Name} Email={props.Email} filmDetails={props.filmDetails} existing={languages} />}
 
             </CardContent>
         </Card>

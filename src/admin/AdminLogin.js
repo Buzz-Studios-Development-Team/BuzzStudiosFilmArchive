@@ -2,6 +2,7 @@ import React from 'react';
 import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
 import { initializeApp } from 'firebase/app';
 import { Card, CardContent, Button, TextField } from "@mui/material";
+import { formLogObject, publishLog } from '../logger/Logger';
 
 import BuzzHeader from '../homepage/BuzzHeader';
 
@@ -42,11 +43,13 @@ const AdminLogin = () => {
         sendSignInLinkToEmail(auth, email, actionCodeSettings)
         .then(() => {
             window.localStorage.setItem('emailForSignIn', email);
+            publishLog(formLogObject("None", "None", `Requested login link for email ${email}`, "Success"));
             alert("Please check your email for a sign-in link.");
             window.close();
         })
         .catch((error) => {
             const errorMessage = error.message;
+            publishLog(formLogObject("None", "None", `Requested login link for email ${email}`, `Failure: ${errorMessage}`));
             if (errorMessage.includes("invalid-email")) {
                 alert("Invalid email address.")
             }

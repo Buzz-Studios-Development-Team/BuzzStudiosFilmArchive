@@ -1,5 +1,6 @@
 import React from "react";
 import { TableContainer, Table, TableRow, TableCell, Select, MenuItem, Button } from "@mui/material";
+import {formLogObject, publishLog} from "../logger/Logger.js";
 
 export default function CaptionLanguageMenu(props)
 {
@@ -29,7 +30,12 @@ export default function CaptionLanguageMenu(props)
         setNewLanguages([...newLanguages, language]);
         setActive(true);
 
-        fetch('https://us-east1-buzz-studios-7f814.cloudfunctions.net/translate-captions?film=' + props.filmDetails.title + "&language=" + language, {
+        publishLog(formLogObject(props.Email, 
+            props.Name, 
+            `Requested a translation of film ${props.filmDetails.id} to language ${language}`, 
+            `Pending`));
+
+        fetch(process.env.REACT_APP_TRANSLATE_CAPTIONS_URL + '?film=' + props.filmDetails.title + "&language=" + language, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -41,10 +47,20 @@ export default function CaptionLanguageMenu(props)
                 var newStatus = genStatus;
                 newStatus[newStatus.length] = 1;
                 setGenStatus(newStatus);
+
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Successfully generated translation of film ${props.filmDetails.id} to language ${language}`, 
+                    `Success`));
             } else {
                 var newStatus = genStatus;
                 newStatus[newStatus.length] = 2;
                 setGenStatus(newStatus);
+
+                publishLog(formLogObject(props.Email, 
+                    props.Name, 
+                    `Translation of film ${props.filmDetails.id} to language ${language} failed internally`, 
+                    `Failure: ${data}`));
             }
             setActive(false);
         })
@@ -54,6 +70,11 @@ export default function CaptionLanguageMenu(props)
             newStatus[newStatus.length] = 3;
             setGenStatus(newStatus);
             setActive(false);
+
+            publishLog(formLogObject(props.Email, 
+                props.Name, 
+                `Translation of film ${props.filmDetails.id} to language ${language} failed`, 
+                `Failure: ${error.message}\n\n${error.trace}`));
         })
     };
 
