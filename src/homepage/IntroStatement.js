@@ -14,7 +14,7 @@ export default function IntroStatement() {
             as thoroughly as humanly possible. It is our hope that this 
             website will be maintained well into the future and continue to 
             document the work of Georgia Tech's longest-running filmmaking 
-            organization.<br/><br/>- Ethan Ollins, President 2023-2025<br/><br/>
+            organization.<br/><br/>— Ethan Ollins<br/>19th President of Buzz Studios<br/>2023-2025<br/><br/>
             This archival mission is an ever-ongoing work in progress. Alumni 
             are strongly encouraged to reach out to help us realize this vision. 
             If you would like to help contribute to this archive, please reach 

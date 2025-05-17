@@ -1,4 +1,4 @@
-import Film from "../tools/Film"
+import Film from "../tools/misc/Film"
 
 export function OtherFilms(props)
 {

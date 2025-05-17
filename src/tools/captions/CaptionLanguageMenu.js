@@ -1,6 +1,6 @@
 import React from "react";
 import { TableContainer, Table, TableRow, TableCell, Select, MenuItem, Button } from "@mui/material";
-import {formLogObject, publishLog} from "../logger/Logger.js";
+import {formLogObject, publishLog} from "../../logger/Logger.js";
 
 export default function CaptionLanguageMenu(props)
 {
@@ -12,7 +12,7 @@ export default function CaptionLanguageMenu(props)
     const [active, setActive] = React.useState(false);
 
     React.useEffect(() => {
-        var langFile = require('./iso_language_codes.json');
+        var langFile = require('../misc/iso_language_codes.json');
         var langList = [];
         for (var i = 0; i < langFile.length; i++) {
             langList.push(langFile[i])

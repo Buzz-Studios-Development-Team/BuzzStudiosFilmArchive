@@ -10,8 +10,8 @@ import { Card, CardContent, TextField, Button, Select, MenuItem, InputLabel, For
 import { Dialog, DialogTitle, DialogContent, DialogContentText, LinearProgress } from "@mui/material";
 
 // Tool imports
-import ManageActors from '../tools/ManageActors';
-import UserManager from "../tools/UserManager";
+import ManageActors from '../tools/cast/ManageActors';
+import UserManager from "../tools/users/UserManager";
 
 // Film tabs
 import InitDetailsTab from "./AdminTabs/InitDetailsTab";
@@ -22,7 +22,7 @@ import CaptionsUploadTab from "./AdminTabs/CaptionsUploadTab";
 import CastUploadTab from "./AdminTabs/CastUploadTab";
 
 import Film from "./FilmDetails";
-import FilmOrderTool from "../tools/FilmOrderTool";
+import FilmOrderTool from "../tools/films/FilmOrderTool";
 
 import { formLogObject, publishLog } from "../logger/Logger";
 
