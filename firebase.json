@@ -8,7 +8,22 @@
     ],
     "rewrites": [ 
       {
-        "source": "/**.html",
+        "source": "/admin",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/myfilms",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/**.xml",
+        "run": {
+          "region": "us-central1",
+          "serviceId": "serve-sitemap"
+        }
+      },
+      {
+        "source": "/**",
         "run": {
           "region": "us-central1",
           "serviceId": "serve-static-page"
