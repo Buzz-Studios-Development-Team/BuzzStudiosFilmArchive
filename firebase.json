@@ -6,9 +6,18 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites": [ {
-   	"source": "**",
-   	"destination": "/index.html"
-    } ]
+    "rewrites": [ 
+      {
+        "source": "/**.html",
+        "run": {
+          "region": "us-central1",
+          "serviceId": "serve-static-page"
+        }
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   }
 }

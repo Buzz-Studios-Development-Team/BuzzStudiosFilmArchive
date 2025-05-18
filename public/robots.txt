@@ -1,3 +1,4 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Disallow:
+Sitemap: https://storage.googleapis.com/buzz-studios-7f814.appspot.com/static_pages/sitemap.xml
