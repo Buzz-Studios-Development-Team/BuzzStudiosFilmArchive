@@ -103,7 +103,7 @@ async function getCaptionFiles(filmData, password) {
         {
             var match = path.match(/-(\w+)\.vtt$/);
             if (match) {
-                var iso = require('../tools/iso_language_codes.json');
+                var iso = require('../tools/misc/iso_language_codes.json');
                 for (var i = 0; i < iso.length; i++) {
                     if (iso[i].language === match[1]) {
                         languages.push(iso[i]);

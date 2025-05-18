@@ -6,9 +6,33 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites": [ {
-   	"source": "**",
-   	"destination": "/index.html"
-    } ]
+    "rewrites": [ 
+      {
+        "source": "/admin",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/myfilms",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/**.xml",
+        "run": {
+          "region": "us-central1",
+          "serviceId": "serve-sitemap"
+        }
+      },
+      {
+        "source": "/**",
+        "run": {
+          "region": "us-central1",
+          "serviceId": "serve-static-page"
+        }
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   }
 }

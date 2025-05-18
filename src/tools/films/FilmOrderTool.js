@@ -6,9 +6,9 @@ import { Card, CardContent, TextField, Button, Select, MenuItem, InputLabel, For
 import { Dialog, DialogTitle, DialogContent, DialogContentText, LinearProgress } from "@mui/material";
 import { TableContainer, TableRow, TableCell, Table, TableHead } from "@mui/material";
 
-import HomePage from "../homepage/HomePage";
+import HomePage from "../../homepage/HomePage.js";
 
-import { formLogObject, publishLog } from "../logger/Logger.js";
+import { formLogObject, publishLog } from "../../logger/Logger.js";
 
 export default function FilmOrderTool(props) {
 

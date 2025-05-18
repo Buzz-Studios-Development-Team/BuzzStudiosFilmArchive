@@ -27,7 +27,7 @@ export function VideoInfo(props)
             
             {props.ScriptURL !== "" && <Link style={{textDecoration: 'none'}} id="scriptLink" target="_blank" download to={props.ScriptURL}><Button style={{margin: "0 auto", width: 200, backgroundColor: "black", display: "block", marginTop: "25px"}} variant="contained" id="scriptDownload">Download Script</Button></Link>}
             </>}
-            
+
             {showCast && <CastTable
                 FilmData={props.FilmData}
                 GetActorName={props.GetActorName}

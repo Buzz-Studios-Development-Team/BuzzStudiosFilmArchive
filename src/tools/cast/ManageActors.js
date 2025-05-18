@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Card, CardContent, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, Select, MenuItem, LinearProgress, InputLabel, FormControl } from "@mui/material";
 import { getFirestore } from "firebase/firestore";
 import { doc, getDoc, getDocs, collection, query, where, setDoc, deleteDoc } from "firebase/firestore";
-import {formLogObject, publishLog} from "../logger/Logger.js";
+import {formLogObject, publishLog} from "../../logger/Logger.js";
 
 const ManageActors = (props) => {
     const [actorNameField, setActorNameField] = React.useState("");

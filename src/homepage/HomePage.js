@@ -7,7 +7,7 @@ import { getDocs, collection, query, orderBy } from "firebase/firestore";
 import {useSearchParams } from 'react-router-dom';
 
 // Helper components
-import Film from '../tools/Film';
+import Film from '../tools/misc/Film';
 import BuzzHeader from './BuzzHeader';
 import IntroStatement from './IntroStatement';
 import FilterTools from './FilterTools';

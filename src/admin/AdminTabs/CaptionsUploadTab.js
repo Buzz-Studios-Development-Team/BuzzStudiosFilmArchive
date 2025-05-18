@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent, Button } from "@mui/material";
-import CaptionLanguageMenu from "../../tools/CaptionLanguageMenu";
+import CaptionLanguageMenu from "../../tools/captions/CaptionLanguageMenu";
 import { getStorage, ref, listAll } from "firebase/storage";
 
 export default function CaptionsUploadTab(props) {

@@ -6,7 +6,7 @@ import { doc, getDoc, getDocs, collection, query, where, setDoc, deleteDoc } fro
 import { TextField, Dialog, DialogTitle, DialogContent, DialogContentText, Select, MenuItem, LinearProgress, InputLabel, FormControl } from "@mui/material";
 
 
-import CastEditor from "../../tools/CastEditor";
+import CastEditor from "../../tools/cast/CastEditor";
 
 export default function CastUploadTab(props) {
     

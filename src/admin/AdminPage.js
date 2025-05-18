@@ -7,7 +7,7 @@ import { getAuth, isSignInWithEmailLink, signInWithEmailLink } from "firebase/au
 import { getDocs, collection, query, where } from "firebase/firestore";
 
 // Additional tool imports
-import ErrorDialog from '../tools/ErrorDialog';
+import ErrorDialog from '../tools/misc/ErrorDialog';
 import BuzzHeader from '../homepage/BuzzHeader';
 import AdminControls from './AdminControls';
 
