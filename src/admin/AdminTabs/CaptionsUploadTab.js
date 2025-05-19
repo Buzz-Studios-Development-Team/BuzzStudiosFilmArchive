@@ -78,14 +78,14 @@ export default function CaptionsUploadTab(props) {
                 </Button>
 
                 {!props.newFilm && 
-                <Button onClick={() => props.setStage(props.Stage.CAST)} 
+                <Button onClick={() => props.setStage(props.Stage.DIRECTORS)} 
                         variant="contained" 
                         color="warning" 
                         style={buttonStyle}>
                     keep current file
                 </Button>}
                 
-                <Button onClick={() => {props.filmDetails.captionsfile = ""; props.setStage(props.Stage.CAST)}} 
+                <Button onClick={() => {props.filmDetails.captionsfile = ""; props.setStage(props.Stage.DIRECTORS)}} 
                         variant="contained" 
                         style={buttonStyle}>
                     do not include captions
@@ -96,7 +96,7 @@ export default function CaptionsUploadTab(props) {
                         style={backButtonStyle}
                 >back</Button>
 
-                {(true || captionsExist) && <CaptionLanguageMenu Name={props.Name} Email={props.Email} filmDetails={props.filmDetails} existing={languages} />}
+                {(captionsExist) && <CaptionLanguageMenu Name={props.Name} Email={props.Email} filmDetails={props.filmDetails} existing={languages} />}
 
             </CardContent>
         </Card>

@@ -47,6 +47,7 @@ export function WatchWindow(props)
                     SetShowCast={props.SetShowCast}
                     ScriptURL={props.ScriptURL}
                     GetActorName={props.GetActorName}
+                    Directors={props.Directors}
                 />
 
             </div>}

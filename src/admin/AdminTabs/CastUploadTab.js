@@ -9,6 +9,8 @@ import { TextField, Dialog, DialogTitle, DialogContent, DialogContentText, Selec
 import CastEditor from "../../tools/cast/CastEditor";
 
 export default function CastUploadTab(props) {
+
+    const [actors, setActors] = React.useState([]);
     
     const buttonStyle = {
         "fontSize": 15,
@@ -24,12 +26,31 @@ export default function CastUploadTab(props) {
         "width": 80
     }
 
+    const getActorName = (id) => {
+        for (var actor in actors)
+        {
+            if (actors[actor].id == id) { return actors[actor].name; }
+        }
+    }
+
     const advance = (cast) => {
+        var stars = "None";
+        if (cast.length == 1) {
+            stars = getActorName(cast[0].actor);
+        }
+        else if (cast.length == 2)
+        {
+            stars = `${getActorName(cast[0].actor)} and ${getActorName(cast[1].actor)}`; 
+        }
+        else if (cast.length >= 3)
+        {
+            stars += `${getActorName(cast[0].actor)}, ${getActorName(cast[1].actor)}, and ${getActorName(cast[2].actor)}`;
+        }
+
         props.filmDetails.cast = cast;
+        props.filmDetails.stars = stars;
         props.setStage(props.Stage.REVIEW);
     };
-
-    const [actors, setActors] = React.useState([]);
 
     const fetchActors = () => {
         const actorList = [];
@@ -93,7 +114,7 @@ export default function CastUploadTab(props) {
                     <CastEditor actors={actors} prevCast={props.filmDetails.cast} continue={advance}/>
                 </>}
 
-                <Button onClick={() => {props.setStage(props.Stage.CAPTIONS)}} 
+                <Button onClick={() => {props.setStage(props.Stage.DIRECTORS)}} 
                         variant="contained" 
                         style={backButtonStyle}
                 >back</Button>

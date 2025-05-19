@@ -10,7 +10,7 @@ import {React, useRef} from 'react';
 import { useParams } from 'react-router-dom';
 
 // Helper functions
-import { retrieveFilmFiles, splitNames } from './Helpers.js';
+import { retrieveFilmFiles } from './Helpers.js';
 
 // Helper components
 import BuzzHeader from "../homepage/BuzzHeader.js";
@@ -35,6 +35,7 @@ export default function WatchPage() {
     const [url, setURL] = useState(false);
     const [associated, setAssociated] = useState({});
     const [actors, setActors] = useState([]);
+    const [directors, setDirectors] = useState([]);
     const [captionTracks, setCaptionTracks] = useState([]);
 
     // Numeric values
@@ -61,6 +62,7 @@ export default function WatchPage() {
 
       var filmsColl = "";
       var actorsColl = "";
+      var directorsColl = "";
 
       // Retrieve the active collection names (sandbox vs. production)
       if (process.env.REACT_APP_USE_SANDBOX === "true") {
@@ -68,13 +70,15 @@ export default function WatchPage() {
 
         // Set local variables
         filmsColl = process.env.REACT_APP_FILMS_SANDBOX;
-        actorsColl =process.env.REACT_APP_ACTORS_SANDBOX;
+        actorsColl = process.env.REACT_APP_ACTORS_SANDBOX;
+        directorsColl = process.env.REACT_APP_DIRECTORS_SANDBOX;
       } else {
         sandbox = false;
 
         // Set local variables
         filmsColl = process.env.REACT_APP_FILMS_COLLECTION;
         actorsColl = process.env.REACT_APP_ACTORS_COLLECTION;
+        directorsColl = process.env.REACT_APP_DIRECTORS_COLLECTION;
       }
       
       const app = initializeApp(firebaseConfig);
@@ -101,35 +105,37 @@ export default function WatchPage() {
   
         // Determine the individual directors involved and set aside the number
         var directors = currentFilmData['director'];
-        var names = splitNames(directors);
-        setNumDirectors(names.length);
-  
-        // Iterate through each film document to find other films by the same directors
-        filmDocs.forEach((film) => {
-          var filmDoc = film.data();
-  
-          for (var i = 0; i < names.length; i++) {
+        if (Array.isArray(directors)) 
+        {
+          setNumDirectors(directors.length);
+    
+          // Iterate through each film document to find other films by the same directors
+          filmDocs.forEach((film) => {
+            var filmDoc = film.data();
+    
+            for (var i = 0; i < directors.length; i++) {
 
-            // If the film involved one of the directors, it's a different film, and it's not a bonus film, set it aside
-            if (filmDoc.director.includes(names[i]) 
-              && filmDoc.title != currentFilmData.title 
-              && !filmDoc.bonus) {
+              // If the film involved one of the directors, it's a different film, and it's not a bonus film, set it aside
+              if (filmDoc.director.includes(directors[i]) 
+                && filmDoc.title != currentFilmData.title 
+                && !filmDoc.bonus) {
 
-                filmDoc['id'] = film.id;
+                  filmDoc['id'] = film.id;
 
-              // Add the film
-              filmsByDirector.push(filmDoc);
+                // Add the film
+                filmsByDirector.push(filmDoc);
+              }
             }
-          }
-  
-          // If the requested film contains an associated bonus material record and the current film matches
-          if (currentFilmData.associated !== undefined && currentFilmData.associated.includes(film.id))
-          {
-            // Set aside associated bonus material
-            filmDoc['id'] = film.id;
-            associatedBonusMaterial.push(filmDoc);
-          }
-        });
+    
+            // If the requested film contains an associated bonus material record and the current film matches
+            if (currentFilmData.associated !== undefined && currentFilmData.associated.includes(film.id))
+            {
+              // Set aside associated bonus material
+              filmDoc['id'] = film.id;
+              associatedBonusMaterial.push(filmDoc);
+            }
+          });
+        }
   
         // Save the film metadata
         setFilmData(currentFilmData);
@@ -152,6 +158,20 @@ export default function WatchPage() {
 
         // Set the state to include all actor records
         setActors(actorList);
+
+        // Create a collection for directors
+        var directorList = [];
+        var directorCollectionRef = collection(db, directorsColl);
+        var directorCollectionDoc = await getDocs(directorCollectionRef);
+
+        // Add every director to the collection
+        directorCollectionDoc.forEach((doc) => {
+          var director = doc.data();
+          director.id = doc.id;
+          directorList.push(director);
+        });
+
+        setDirectors(directorList);
 
         // If the film has already been released, attempt to request its URL
         if (currentFilmData.access === "released") {
@@ -271,6 +291,7 @@ export default function WatchPage() {
             NotFound={notFound}
             ScriptURL={scriptURL}
             GetActorName={getActorName}
+            Directors={directors}
           />
         </div>
 

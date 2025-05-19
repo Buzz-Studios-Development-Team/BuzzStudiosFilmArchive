@@ -5,8 +5,6 @@ export default function InitDetailsTab(props) {
 
     const [title, setTitle] = React.useState(props.filmDetails.getTitle());
     const [semester, setSemester] = React.useState(props.filmDetails.getSemester());
-    const [director, setDirector] = React.useState(props.filmDetails.getDirector());
-    const [stars, setStars] = React.useState(props.filmDetails.getStars());
     const [synopsis, setSynopsis] = React.useState(props.filmDetails.getSynopsis());
     const [category, setCategory] = React.useState(props.filmDetails.getCategory());
     const [access, setAccess] = React.useState(props.filmDetails.getAccess());
@@ -15,8 +13,6 @@ export default function InitDetailsTab(props) {
 
     const [titleError, setTitleError] = React.useState(false);
     const [semesterError, setSemesterError] = React.useState(false);
-    const [directorError, setDirectorError] = React.useState(false);
-    const [starError, setStarError] = React.useState(false);
     const [synopsisError, setSynopsisError] = React.useState(false);
     const [categoryError, setCategoryError] = React.useState(false);
     const [accessError, setAccessError] = React.useState(false);
@@ -35,18 +31,6 @@ export default function InitDetailsTab(props) {
         var valid = filmDetails.setSemester(semester);
         setSemester(semester);
         setSemesterError(!valid);
-    }
-
-    const handleDirector = (director) => {
-        var valid = filmDetails.setDirector(director);
-        setDirector(director);
-        setDirectorError(!valid);
-    }
-
-    const handleStars = (stars) => {
-        var valid = filmDetails.setStars(stars);
-        setStars(stars);
-        setStarError(!valid);
     }
 
     const handleSynopsis = (synopsis) => {
@@ -86,8 +70,6 @@ export default function InitDetailsTab(props) {
     const verifyAndContinue = () => {
         if (!titleError
             && !semesterError
-            && !directorError
-            && !starError
             && !synopsisError
             && !categoryError
             && !accessError
@@ -101,7 +83,7 @@ export default function InitDetailsTab(props) {
 
     return (
         <Card variant="outlined" sx={{width: 500, margin: "0 auto"}}>
-            <CardContent style={{display: "flex", alignItems: "center", flexDirection: "column"}}>
+            <CardContent sx={{display: "flex", alignItems: "center", flexDirection: "column"}}>
                 <p style={{color: "black", fontSize: 30, marginTop: 0}}>Film ID: <strong>{props.selectedFilm}</strong></p>
 
                 <TextField 
@@ -123,24 +105,6 @@ export default function InitDetailsTab(props) {
                     sx={{width: 400, margin: 1}} />
 
                 <TextField 
-                    value={director} 
-                    onChange={(event) => handleDirector(event.target.value)} 
-                    id="outlined-basic" 
-                    label="Director's Name" 
-                    variant="outlined" 
-                    error={directorError}
-                    sx={{width: 400, margin: 1}} />
-
-                <TextField 
-                    value={stars} 
-                    onChange={(event) => handleStars(event.target.value)} 
-                    id="outlined-basic" 
-                    label="Stars" 
-                    variant="outlined" 
-                    error={starError}
-                    sx={{width: 400, margin: 1}} />
-
-                <TextField 
                     value={synopsis} 
                     onChange={(event) => handleSynopsis(event.target.value)} 
                     id="outlined-basic" 
@@ -159,7 +123,7 @@ export default function InitDetailsTab(props) {
                     error={imdbError}
                     sx={{width: 400, margin: 1}} />
                 
-                <FormControl style={{width: 400, marginTop: 8, margin: "0 auto"}}>
+                <FormControl sx={{width: 400, margin: 1}}>
                 <InputLabel id="demo-simple-select-label">Category</InputLabel>
                 <Select
                     value={category}
@@ -175,8 +139,7 @@ export default function InitDetailsTab(props) {
                 </Select>
                 </FormControl>
 
-                <br></br>
-                <FormControl style={{width: 400, marginTop: -5, margin: "0 auto"}}>
+                <FormControl sx={{width: 400, margin: 1}}>
                 <InputLabel id="demo-simple-select-label">Access</InputLabel>
                 <Select
                     value={access}

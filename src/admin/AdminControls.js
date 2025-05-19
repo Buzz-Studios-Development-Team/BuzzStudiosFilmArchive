@@ -10,7 +10,7 @@ import { Card, CardContent, TextField, Button, Select, MenuItem, InputLabel, For
 import { Dialog, DialogTitle, DialogContent, DialogContentText, LinearProgress } from "@mui/material";
 
 // Tool imports
-import ManageActors from '../tools/cast/ManageActors';
+import ManagePeople from '../tools/cast/ManagePeople';
 import UserManager from "../tools/users/UserManager";
 
 // Film tabs
@@ -19,6 +19,7 @@ import VideoUploadTab from "./AdminTabs/VideoUploadTab";
 import ThumbnailUploadTab from "./AdminTabs/ThumbnailUploadTab";
 import ScriptUploadTab from "./AdminTabs/ScriptUploadTab";
 import CaptionsUploadTab from "./AdminTabs/CaptionsUploadTab";
+import DirectorTab from "./AdminTabs/DirectorTab";
 import CastUploadTab from "./AdminTabs/CastUploadTab";
 
 import Film from "./FilmDetails";
@@ -114,9 +115,10 @@ export default function AdminControls(props) {
         THUMBNAIL: 3,
         SCRIPT: 4,
         CAPTIONS: 5,
-        CAST: 6,
-        REVIEW: 7,
-        FINISHED: 8
+        DIRECTORS: 6,
+        CAST: 7,
+        REVIEW: 8,
+        FINISHED: 9
     };
 
     const sendRequest = () => {
@@ -240,7 +242,16 @@ export default function AdminControls(props) {
             var today = new Date();
             var fileName = selectedFilm + fileIdentifier + String(today.getTime()) + fileExtension;
 
-            filmDetails.filmfile = fileName;
+            if (type == "video") {
+                filmDetails.filmfile = fileName;
+            } else if (type == "image") {
+                filmDetails.thumbnail = fileName;
+            } else if (type == "document") {
+                filmDetails.script = fileName;
+            } else if (type == "captions") {
+                filmDetails.captions = fileName;
+            }
+            
             const storageRef = ref(storage, bucket + fileName);
             const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
@@ -395,10 +406,25 @@ export default function AdminControls(props) {
                 </Card>
                 <br></br>
 
+                {/* Show the director management component */}
+                {(props.Exec) && 
+                <><h2>Manage Directors</h2>
+                <ManagePeople 
+                    Name={props.Name} 
+                    Email={props.Email} 
+                    collection={process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_DIRECTORS_SANDBOX : process.env.REACT_APP_DIRECTORS_COLLECTION}
+                    personType="Director"
+                /><br/></>}
+
                 {/* Show the actor management component */}
                 {(props.Exec) && 
                 <><h2>Manage Actors</h2>
-                <ManageActors Name={props.Name} Email={props.Email}/><br/></>}
+                <ManagePeople 
+                    Name={props.Name} 
+                    Email={props.Email} 
+                    collection={process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION}
+                    personType="Actor"
+                /><br/></>}
 
                 {/* Show the actor management component */}
                 {(props.Exec) && 
@@ -467,6 +493,17 @@ export default function AdminControls(props) {
                 Email={props.Email}
             />}
 
+            {stage === Stage.DIRECTORS && 
+            <DirectorTab
+                selectedFilm={selectedFilm}
+                filmDetails={filmDetails}
+                setFilmDetails={setFilmDetails}
+                Stage={Stage}
+                setStage={setStage}
+                newFilm={newFilm}
+                Collection={process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_DIRECTORS_SANDBOX : process.env.REACT_APP_DIRECTORS_COLLECTION}
+            />}
+
             {stage === Stage.CAST && 
             <CastUploadTab
                 selectedFilm={selectedFilm}
@@ -483,7 +520,7 @@ export default function AdminControls(props) {
                         <p style={{fontSize: 18, marginTop: 0}}>Film ID: <strong>{selectedFilm}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Title: <strong>{filmDetails.getTitle()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Semester Produced: <strong>{filmDetails.getSemester()}</strong></p>
-                        <p style={{fontSize: 18, marginTop: 0}}>Director Name: <strong>{filmDetails.getDirector()}</strong></p>
+                        <p style={{fontSize: 18, marginTop: 0}}>Director Name: <strong>{filmDetails.getDirectorNames()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Stars: <strong>{filmDetails.getStars()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0, textAlign: "center"}}>Synopsis: <strong>{filmDetails.getSynopsis()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>IMDb Link: <strong>{filmDetails.getIMDB()}</strong></p>

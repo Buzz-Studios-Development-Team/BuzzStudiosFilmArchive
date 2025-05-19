@@ -7,13 +7,38 @@ import React from "react";
 export function VideoInfo(props)
 {
     const [showCast, setShowCast] = React.useState(false);
+    
+    const getDirectorName = (id) => {
+      for (var dir in props.Directors)
+      {
+        if (props.Directors[dir].id == id) { return props.Directors[dir].name; }
+      }
+    }
+
+    const formDirectorString = (directors) => {
+        var directorNames = "";
+
+        if (directors.length == 1) {
+            directorNames = getDirectorName(directors[0]);
+        } else if (directors.length == 2) {
+            directorNames = getDirectorName(directors[0]) + " and " + getDirectorName(directors[1]);
+        } else {
+            for (var i = 0; i < directors.length - 1; i++) {
+                directorNames += getDirectorName(directors[i]) + ", ";
+            }
+            directorNames += ("and " + getDirectorName(directors[directors.length - 1]));
+        }
+
+        return directorNames;
+    };
 
     return (
         <>
             {!showCast && <><strong><p class="title">{props.FilmData.title}</p></strong>
 
-            <p class="subheading">Directed by {props.FilmData.director}</p>
-            <p class="subheading">Starring {props.FilmData.stars}</p><br></br>
+            {Array.isArray(props.FilmData.director) && <p class="subheading">Directed by {formDirectorString(props.FilmData.director)}</p>}
+            {props.FilmData.stars !== "None" && <p class="subheading">Starring {props.FilmData.stars}</p>}
+            <br></br>
             <p class="synopsis">{props.FilmData.synopsis}</p>
 
             {props.FilmData.tags !== undefined &&
