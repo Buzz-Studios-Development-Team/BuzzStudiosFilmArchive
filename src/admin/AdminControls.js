@@ -247,7 +247,7 @@ export default function AdminControls(props) {
             } else if (type == "image") {
                 filmDetails.thumbnail = fileName;
             } else if (type == "document") {
-                filmDetails.script = fileName;
+                filmDetails.scriptfile = fileName;
             } else if (type == "captions") {
                 filmDetails.captions = fileName;
             }
