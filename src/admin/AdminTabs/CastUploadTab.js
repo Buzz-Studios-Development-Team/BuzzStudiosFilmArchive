@@ -44,7 +44,7 @@ export default function CastUploadTab(props) {
         }
         else if (cast.length >= 3)
         {
-            stars += `${getActorName(cast[0].actor)}, ${getActorName(cast[1].actor)}, and ${getActorName(cast[2].actor)}`;
+            stars = `${getActorName(cast[0].actor)}, ${getActorName(cast[1].actor)}, and ${getActorName(cast[2].actor)}`;
         }
 
         props.filmDetails.cast = cast;

@@ -1,5 +1,5 @@
 import React from "react";
-import { getFirestore, query, collection, getDocs } from "firebase/firestore";
+import { getFirestore, query, collection, getDocs, limitToLast } from "firebase/firestore";
 import { Card, CardContent, Select, MenuItem, Button, FormControl, InputLabel } from "@mui/material";
 
 export default function DirectorTab(props)
@@ -43,6 +43,23 @@ export default function DirectorTab(props)
 
             setDirectors(directorList);
             setSelected(directorList[0]);
+
+            if (Array.isArray(props.filmDetails.director))
+            {
+                for (var i = 0; i < props.filmDetails.director.length; i++) {
+                    var director = null;
+                    for (var e = 0; e < directorList.length; e++) {
+                        if (directorList[e].id == props.filmDetails.director[i]) {
+                            director = directorList[e];
+                            break;
+                        }
+                    }
+
+                    if (director != null) {
+                        setSelections([...selections, director]);
+                    }
+                }
+            }
         }
 
         fetch();
