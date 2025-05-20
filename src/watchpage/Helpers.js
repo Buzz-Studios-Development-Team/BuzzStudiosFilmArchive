@@ -133,19 +133,3 @@ function formCaptionFilename(filmData, language)
     var url = language === "English" ? filmData.captions : prefix + filmData.captions.substring(0, filmData.captions.length - 11) + language + ".vtt";
     return url;
 }
-
-export function splitNames(nameList) {
-    let names = nameList.split(',');
-    
-    let finalNames = [];
-    
-    names.forEach(name => {
-        if (name.includes(' and ')) {
-            finalNames.push(...name.split(' and ').map(n => n.trim()));
-        } else {
-            finalNames.push(name.trim());
-        }
-    });
-    
-    return finalNames;
-}

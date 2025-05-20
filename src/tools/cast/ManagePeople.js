@@ -4,114 +4,114 @@ import { getFirestore } from "firebase/firestore";
 import { doc, getDoc, getDocs, collection, query, where, setDoc, deleteDoc } from "firebase/firestore";
 import {formLogObject, publishLog} from "../../logger/Logger.js";
 
-const ManageActors = (props) => {
-    const [actorNameField, setActorNameField] = React.useState("");
+const ManagePeople = (props) => {
+    const [nameField, setNameField] = React.useState("");
     const [imdbField, setImdbField] = React.useState("");
     const [siteField, setSiteField] = React.useState("");
 
-    const [selectedActor, setSelectedActor] = React.useState("");
+    const [selectedPerson, setSelectedPerson] = React.useState("");
 
-    const [actors, setActors] = React.useState([]);
+    const [people, setPeople] = React.useState([]);
 
     const [editState, setEditState] = React.useState(0);
 
     const handleChange = (event) => {
-        setSelectedActor(event.target.value);
+        setSelectedPerson(event.target.value);
     };
 
-    const RetrieveActors = () => {
-        const actorList = [];
+    const RetrievePeople = () => {
+        const personList = [];
 
         const fetch = async () => {
             var db = getFirestore();
 
             try {
-                var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
+                var coll = props.collection;
                 var getStatus = query(collection(db, coll));
                 var status = await getDocs(getStatus)
 
                 status.forEach((doc) => {
                     var info = doc.data();
                     info.id = doc.id;
-                    actorList.push(info);
+                    personList.push(info);
                 });
 
                 publishLog(formLogObject(props.Email, 
                     props.Name, 
-                    `Retrieved ${coll} collection for ManageActors`, 
+                    `Retrieved ${coll} collection for ManagePeople`, 
                     `Success`));
             } catch (error) {
                 publishLog(formLogObject(props.Email, 
                     props.Name, 
-                    `Retrieval of ${coll} collection by ManageActors failed`, 
+                    `Retrieval of ${coll} collection by ManagePeople failed`, 
                     `Failure: ${error.message}\n\nStack: ${error.trace}`));
             }
 
-            setActors(actorList);
+            setPeople(personList);
         }
 
         fetch();
     }
 
     React.useEffect(() => {
-        RetrieveActors();
+        RetrievePeople();
     }, []);
 
     const confirm = () => {
-        if (actorNameField == "")
+        if (nameField == "")
         {
             alert("Name cannot be empty.");
             return;
         }
 
-        var id = selectedActor;
+        var id = selectedPerson;
         if (editState == 0)
         {
-            id = Math.random().toString().substring(2);
+            id = crypto.randomUUID();
         }
 
         const send = async () => {
             var db = getFirestore();
-            var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
+            var coll = props.collection;
             var obj = {
-                "name": actorNameField,
+                "name": nameField,
                 "imdb": imdbField,
                 "site": siteField
             }
 
             try {
-                const actorsRef = collection(db, coll);
-                await setDoc(doc(actorsRef, id), {
-                    name: actorNameField,
+                const peopleRef = collection(db, coll);
+                await setDoc(doc(peopleRef, id), {
+                    name: nameField,
                     imdb: imdbField,
                     site: siteField
                 });
                 publishLog(formLogObject(props.Email, 
                     props.Name, 
-                    `Successfully confirmed actor details for id ${id} in ${coll} collection. Data: ${JSON.stringify(obj)}`, 
+                    `Successfully confirmed person details for id ${id} in ${coll} collection. Data: ${JSON.stringify(obj)}`, 
                     `Success`));
             } catch (error) {
                 publishLog(formLogObject(props.Email, 
                     props.Name, 
-                    `Confirmation of actor details for id ${id} in ${coll} collection failed. Attempted: ${JSON.stringify(obj)}`, 
+                    `Confirmation of person details for id ${id} in ${coll} collection failed. Attempted: ${JSON.stringify(obj)}`, 
                     `Failure: ${error.message}\n\nStack: ${error.trace}`));
             }
             
         }
         send();
 
-        setActorNameField("");
+        setNameField("");
         setImdbField("");
         setSiteField("");
 
-        RetrieveActors();
+        RetrievePeople();
 
         setEditState(0);
     }
 
     const cancel = () => {
         if (editState == 1) { setEditState(0); }
-        setActorNameField("");
+        setNameField("");
         setImdbField("");
         setSiteField("");
     }
@@ -119,60 +119,60 @@ const ManageActors = (props) => {
     const edit = () => {
         setEditState(1);
         
-        var actor;
-        for (var i = 0; i < actors.length; i++)
+        var person;
+        for (var i = 0; i < people.length; i++)
         {
-            if (actors[i].id == selectedActor)
+            if (people[i].id == selectedPerson)
             {
-                actor = actors[i];
+                person = people[i];
                 break;
             }
         }
 
-        if (actor !== null)
+        if (person !== null)
         {
-            setActorNameField(actor.name);
-            setImdbField(actor.imdb !== undefined ? actor.imdb : "");
-            setSiteField(actor.site !== undefined ? actor.site : "");
+            setNameField(person.name);
+            setImdbField(person.imdb !== undefined ? person.imdb : "");
+            setSiteField(person.site !== undefined ? person.site : "");
         }
     }
 
-    const deleteActor = () => {
+    const deletePerson = () => {
         var db = getFirestore();
-        var coll = process.env.REACT_APP_USE_SANDBOX === "true" ? process.env.REACT_APP_ACTORS_SANDBOX : process.env.REACT_APP_ACTORS_COLLECTION;
+        var coll = props.collection;
 
         var name;
-        for (var i = 0; i < actors.length; i++) {
-            if (actors[i].id === selectedActor) {
-                name = actors[i].name;
+        for (var i = 0; i < people.length; i++) {
+            if (people[i].id === selectedPerson) {
+                name = people[i].name;
                 break;
             }
         }
 
         const del = async () => {
             try {
-                await deleteDoc(doc(db, coll, selectedActor));
+                await deleteDoc(doc(db, coll, selectedPerson));
                 publishLog(formLogObject(props.Email, 
                     props.Name, 
-                    `Deletion of actor details for id ${selectedActor}, name ${name} in ${coll} collection succeeded.`, 
+                    `Deletion of person details for id ${selectedPerson}, name ${name} in ${coll} collection succeeded.`, 
                     `Success`));
             } catch (error) {
                 publishLog(formLogObject(props.Email, 
                     props.Name, 
-                    `Deletion of actor details for id ${selectedActor}, name ${name} in ${coll} collection failed.`, 
+                    `Deletion of person details for id ${selectedPerson}, name ${name} in ${coll} collection failed.`, 
                     `Failure: ${error.message}\n\nStack: ${error.trace}`));
             }
         }
         del();
-        RetrieveActors();
+        RetrievePeople();
     }
 
     return (
         <>
             <Card variant="outlined" sx={{width: 500, margin: "0 auto"}}>
                 <CardContent style={{display: "flex", alignItems: "center", flexDirection: "column"}}>
-                    <p style={{color: "black", fontSize: 20, margin: 10, fontFamily: "Lucida Sans"}}>{editState == 0 ? "Add New Actor" : "Edit Actor"}</p>
-                    <TextField value={actorNameField} onChange={(event) => {setActorNameField(event.target.value);}} id="outlined-basic" label="Actor Name" variant="outlined" sx={{margin: 0.5}} />
+                    <p style={{color: "black", fontSize: 20, margin: 10, fontFamily: "Lucida Sans"}}>{editState == 0 ? "Add New " + props.personType : "Edit " + props.personType}</p>
+                    <TextField value={nameField} onChange={(event) => {setNameField(event.target.value);}} id="outlined-basic" label={props.personType + " Name"} variant="outlined" sx={{margin: 0.5}} />
                     <TextField value={imdbField} onChange={(event) => {setImdbField(event.target.value);}} id="outlined-basic" label="IMDb Link" variant="outlined" sx={{margin: 0.5}} />
                     <TextField value={siteField} onChange={(event) => {setSiteField(event.target.value);}} id="outlined-basic" label="Personal Website Link" variant="outlined" sx={{margin: 0.5}} />
 
@@ -183,18 +183,18 @@ const ManageActors = (props) => {
 
                     <br></br>
                     
-                    <p style={{color: "black", fontSize: 20, margin: 10, fontFamily: "Lucida Sans"}}>{"Existing Actors"}</p>
+                    <p style={{color: "black", fontSize: 20, margin: 10, fontFamily: "Lucida Sans"}}>{"Existing People"}</p>
                     <FormControl style={{margin: "0 auto", width: 250}}>
                         <Select
                             labelId="select-existing-film"
                             id="select-film-id"
-                            value={selectedActor}
+                            value={selectedPerson}
                             hiddenLabel
                             onChange={handleChange}>
                             {
-                                actors.sort((a, b) => a.name.localeCompare(b.name)).map((actor, i) => {
+                                people.sort((a, b) => a.name.localeCompare(b.name)).map((person, i) => {
                                     return (
-                                        <MenuItem value={actor.id}>{actor.name}</MenuItem>
+                                        <MenuItem value={person.id}>{person.name}</MenuItem>
                                     )
                                 })
                             }
@@ -203,7 +203,7 @@ const ManageActors = (props) => {
 
                     <div style={{display: "flex", gap: 10}}>
                         <Button onClick={() => {edit()}} variant="contained" style={{fontSize: 15, marginTop: 10, backgroundColor: "gray"}}>Edit</Button>
-                        <Button onClick={() => {deleteActor()}} variant="contained" style={{fontSize: 15, marginTop: 10, backgroundColor: "gray"}}>Delete</Button>
+                        <Button onClick={() => {deletePerson()}} variant="contained" style={{fontSize: 15, marginTop: 10, backgroundColor: "gray"}}>Delete</Button>
                     </div>
                 </CardContent>
             </Card>
@@ -211,4 +211,4 @@ const ManageActors = (props) => {
     )
 }
 
-export default ManageActors;
+export default ManagePeople;

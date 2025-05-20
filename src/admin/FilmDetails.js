@@ -12,6 +12,8 @@ export default class Film
     #category = 0;
     #imdb = "";
 
+    directornames = ""
+
     filmfile = "";
     thumbnail = "";
     scriptfile = "";
@@ -88,6 +90,10 @@ export default class Film
 
     getDirector() {
         return this.director;
+    }
+
+    getDirectorNames() {
+        return this.directornames;
     }
 
     setStars(newStars) {
