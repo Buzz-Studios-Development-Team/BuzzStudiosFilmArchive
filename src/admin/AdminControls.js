@@ -121,6 +121,15 @@ export default function AdminControls(props) {
         FINISHED: 9
     };
 
+    const getDate = () => {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
     const sendRequest = () => {
         if (props.User === undefined) {
             alert("Please re-authenticate.");
@@ -153,7 +162,8 @@ export default function AdminControls(props) {
                         independent: filmDetails.getCategory() == 1,
                         bonus: filmDetails.getCategory() == 2,
                         "cast-new": filmDetails.cast,
-                        imdb: filmDetails.getIMDB() === undefined ? "" : filmDetails.getIMDB()
+                        imdb: filmDetails.getIMDB() === undefined ? "" : filmDetails.getIMDB(),
+                        lastmod: getDate()
                     });
                     publishLog(formLogObject(props.Email, 
                         props.Name, 
