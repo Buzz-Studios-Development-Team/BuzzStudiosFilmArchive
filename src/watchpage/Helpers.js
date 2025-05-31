@@ -91,27 +91,17 @@ export async function retrieveFilmFiles(filmData, password)
 }
 
 async function getCaptionFiles(filmData, password) {
-    const storage = getStorage();
-    const listRef = ref(storage, "translated-captions/");
 
     var languages = [{"language": "English", "code": "en"}];
-    const res = await listAll(listRef)
-
-    res.items.forEach((itemRef) => {
-        var path = itemRef._location.path_;
-        if (path.includes(filmData.captions.substring(0, filmData.captions.length - 11)))
-        {
-            var match = path.match(/-(\w+)\.vtt$/);
-            if (match) {
-                var iso = require('../tools/misc/iso_language_codes.json');
-                for (var i = 0; i < iso.length; i++) {
-                    if (iso[i].language === match[1]) {
-                        languages.push(iso[i]);
-                    }
-                }
+    var iso = require('../tools/misc/iso_language_codes.json');
+    
+    for (var language in filmData.languages) {
+        for (var i = 0; i < iso.length; i++) {
+            if (iso[i].language === filmData.languages[language]) {
+                languages.push(iso[i]);
             }
         }
-    });
+    }
 
     const tracks = await Promise.all(
         languages.map(async (lang) => {
@@ -129,7 +119,10 @@ async function getCaptionFiles(filmData, password) {
 
 function formCaptionFilename(filmData, language) 
 {
-    var prefix = (language === "English" ? "" : "translated-captions/");
-    var url = language === "English" ? filmData.captions : prefix + filmData.captions.substring(0, filmData.captions.length - 11) + language + ".vtt";
-    return url;
+    if (language === "English") {
+        return filmData.captions;
+    }
+    else {
+        return `translated-captions/${filmData.id}/${filmData.captions.substring(0, filmData.captions.length - 4)}/${language}.vtt`;
+    }
 }
