@@ -9,6 +9,8 @@ export default function InitDetailsTab(props) {
     const [category, setCategory] = React.useState(props.filmDetails.getCategory());
     const [access, setAccess] = React.useState(props.filmDetails.getAccess());
     const [accessCode, setAccessCode] = React.useState("");
+    const [index, setIndex] = React.useState(props.filmDetails.getIndex())
+    const [indexOverride, setIndexOverride] = React.useState("");
     const [imdb, setIMDB] = React.useState(props.filmDetails.getIMDB()); 
 
     const [titleError, setTitleError] = React.useState(false);
@@ -17,6 +19,8 @@ export default function InitDetailsTab(props) {
     const [categoryError, setCategoryError] = React.useState(false);
     const [accessError, setAccessError] = React.useState(false);
     const [accessCodeError, setAccessCodeError] = React.useState(false);
+    const [indexError, setIndexError] = React.useState(false);
+    const [indexOverrideError, setIndexOverrideError] = React.useState(false);
     const [imdbError, setIMDBError] = React.useState(false);
 
     var filmDetails = props.filmDetails;
@@ -67,6 +71,27 @@ export default function InitDetailsTab(props) {
         setIMDBError(!valid);
     }
 
+    const handleIndex = (index) => {
+        var valid = filmDetails.setIndex(index);
+        setIndex(index);
+        setIndexError(!valid);
+    }
+
+    const handleIndexOverride = (indexOverride) => {
+        var valid = filmDetails.setindexOverride(indexOverride);
+        setIndexOverride(indexOverride);
+        setIndexOverrideError(!valid);
+
+        if (this.index == 1) 
+            {
+                setIndexOverride(true);
+            }
+        if (this.index == 2) 
+            {
+                setIndexOverride(false);
+            }
+    }
+
     const verifyAndContinue = () => {
         if (!titleError
             && !semesterError
@@ -74,6 +99,8 @@ export default function InitDetailsTab(props) {
             && !categoryError
             && !accessError
             && !accessCodeError
+            && !indexError
+            && !indexOverrideError
             && !imdbError
         ) {
             props.setStage(props.Stage.FILM_FILE)
@@ -155,6 +182,22 @@ export default function InitDetailsTab(props) {
                     <MenuItem value={"preprod"}>Pre-Production</MenuItem>
                     <MenuItem value={"prod"}>Production</MenuItem>
                     <MenuItem value={"postprod"}>Post-Production</MenuItem>
+                </Select>
+                </FormControl>
+
+                <FormControl sx={{width: 400, margin: 1}}>
+                <InputLabel id="demo-simple-select-label">Index</InputLabel>
+                <Select
+                    value={index}
+                    labelId="select-index"
+                    id="select-index-id"
+                    style={{width: 400, margin: "0 auto"}}
+                    label={"Index"}
+                    error={indexError}
+                    onChange={(event) => handleIndex(event.target.value)}>
+                    <MenuItem value={'normal'}>Normal Indexing</MenuItem>
+                    <MenuItem value={'allow'}>Override: Allow Indexing</MenuItem>
+                    <MenuItem value={'disallow'}>Override: Disallow Indexing</MenuItem>
                 </Select>
                 </FormControl>
 

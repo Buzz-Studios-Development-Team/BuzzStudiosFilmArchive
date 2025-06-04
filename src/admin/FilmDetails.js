@@ -10,6 +10,8 @@ export default class Film
     #accessCode = "";
     #order = 0;
     #category = 0;
+    #index = 0;
+    #indexOverride = "";
     #imdb = "";
 
     directornames = ""
@@ -34,6 +36,8 @@ export default class Film
             "accessCode": this.accessCode,
             "order": this.order,
             "category": this.category,
+            "index": this.index,
+            "index override": this.indexOverride,
             "imdb": this.imdb,
             "filmfile": this.filmfile,
             "thumbnail": this.thumbnail,
@@ -167,6 +171,34 @@ export default class Film
     getCategory() {
         return this.category;
     }
+
+    setIndex(newIndex) 
+    {
+        if (!isNaN(newIndex) && newIndex >= 0 && newIndex <= 2)
+        {
+            this.index = newIndex;
+            return true;
+        }
+        return false;
+    }
+
+    getIndex() 
+    {
+        return this.index;
+    }
+
+    setIndexOverride(newIndexOverride) {
+        if (this.getIndex() == 1 || this.getIndex() == 2) {
+            this.indexOverride = newIndexOverride;
+            return true;
+        }
+        return false;
+    }
+
+    getIndexOverride() {
+        return this.indexOverride;
+    }
+
 
     setIMDB(newIMDB) {
         //Note: Need to allow empty fields since most films will not have an IMDB page
