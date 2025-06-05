@@ -8,6 +8,13 @@
     ],
     "rewrites": [ 
       {
+        "source": "/videos/**",
+        "run": {
+          "region": "us-central1",
+          "serviceId": "request-film-seo"
+        }
+      },
+      {
         "source": "/admin",
         "destination": "/index.html"
       },

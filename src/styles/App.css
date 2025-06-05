@@ -354,6 +354,12 @@ main a {
   align-items: center;
 }
 
+.languages {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 30px;
+}
+
 @media screen and (max-width: 590px) {
   .intro-box {
     width: 400px;
