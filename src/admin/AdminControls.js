@@ -537,7 +537,7 @@ export default function AdminControls(props) {
                         <p style={{fontSize: 18, marginTop: 0, textAlign: "center"}}>Synopsis: <strong>{filmDetails.getSynopsis()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>IMDb Link: <strong>{filmDetails.getIMDB()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Category: <strong>{filmDetails.getCategory() == 0 ? "Regular" : filmDetails.getCategory() == 1 ? "Self-Guided" : "Bonus"}</strong></p>
-                        <p style={{fontSize: 18, marginTop: 0}}>Index: <strong>{filmDetails.getIndex() == 0 ? "Follow Category Indexing Rule" : filmDetails.getCategory() == 1 ? "Override: Allow Indexing" : "Override: Disallow Indexing"}</strong></p>
+                        <p style={{fontSize: 18, marginTop: 0}}>Index: <strong>{filmDetails.getIndex() == 0 ? "Follow Category Indexing Rule" : filmDetails.getIndex() == 1 ? "Override: Allow Indexing" : "Override: Disallow Indexing"}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Access: 
                             <strong>{
                                 (filmDetails.getAccess() === "released" && " Publicly Released") || 
