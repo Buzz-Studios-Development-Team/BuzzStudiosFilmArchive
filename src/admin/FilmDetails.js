@@ -10,6 +10,7 @@ export default class Film
     #accessCode = "";
     #order = 0;
     #category = 0;
+    #index = 0;
     #imdb = "";
 
     directornames = ""
@@ -34,6 +35,7 @@ export default class Film
             "accessCode": this.accessCode,
             "order": this.order,
             "category": this.category,
+            "index": this.index,
             "imdb": this.imdb,
             "filmfile": this.filmfile,
             "thumbnail": this.thumbnail,
@@ -168,9 +170,24 @@ export default class Film
         return this.category;
     }
 
+    setIndex(newIndex) 
+    {
+        if (!isNaN(newIndex) && newIndex >= 0 && newIndex <= 2)
+        {
+            this.index = newIndex;
+            return true;
+        }
+        return false;
+    }
+
+    getIndex() 
+    {
+        return this.index;
+    }
+
     setIMDB(newIMDB) {
         //Note: Need to allow empty fields since most films will not have an IMDB page
-        if (newIMDB == undefined) {
+        if (newIMDB === undefined) {
             this.imdb = "";
             return true;
         }
@@ -194,7 +211,7 @@ export default class Film
     }
     
     checkEmpty(input) {
-        if (this.checkNull(input) && input != '') {
+        if (this.checkNull(input) && input !== '') {
             return true;
         } else {
             return false;

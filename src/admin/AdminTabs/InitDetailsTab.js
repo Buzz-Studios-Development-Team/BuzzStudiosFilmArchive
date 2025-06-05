@@ -9,6 +9,7 @@ export default function InitDetailsTab(props) {
     const [category, setCategory] = React.useState(props.filmDetails.getCategory());
     const [access, setAccess] = React.useState(props.filmDetails.getAccess());
     const [accessCode, setAccessCode] = React.useState("");
+    const [index, setIndex] = React.useState(props.filmDetails.getIndex())
     const [imdb, setIMDB] = React.useState(props.filmDetails.getIMDB()); 
 
     const [titleError, setTitleError] = React.useState(false);
@@ -17,6 +18,7 @@ export default function InitDetailsTab(props) {
     const [categoryError, setCategoryError] = React.useState(false);
     const [accessError, setAccessError] = React.useState(false);
     const [accessCodeError, setAccessCodeError] = React.useState(false);
+    const [indexError, setIndexError] = React.useState(false);
     const [imdbError, setIMDBError] = React.useState(false);
 
     var filmDetails = props.filmDetails;
@@ -50,7 +52,7 @@ export default function InitDetailsTab(props) {
         setAccess(access);
         setAccessError(!valid);
 
-        if (access === "restricted" && (filmDetails.accessCode == undefined || filmDetails.accessCode.trim() === "")) {
+        if (access === "restricted" && (filmDetails.accessCode === undefined || filmDetails.accessCode.trim() === "")) {
             setAccessCodeError(true);
         }
     }
@@ -67,6 +69,12 @@ export default function InitDetailsTab(props) {
         setIMDBError(!valid);
     }
 
+    const handleIndex = (index) => {
+        var valid = filmDetails.setIndex(index);
+        setIndex(index);
+        setIndexError(!valid);
+    }
+
     const verifyAndContinue = () => {
         if (!titleError
             && !semesterError
@@ -74,6 +82,7 @@ export default function InitDetailsTab(props) {
             && !categoryError
             && !accessError
             && !accessCodeError
+            && !indexError
             && !imdbError
         ) {
             props.setStage(props.Stage.FILM_FILE)
@@ -155,6 +164,22 @@ export default function InitDetailsTab(props) {
                     <MenuItem value={"preprod"}>Pre-Production</MenuItem>
                     <MenuItem value={"prod"}>Production</MenuItem>
                     <MenuItem value={"postprod"}>Post-Production</MenuItem>
+                </Select>
+                </FormControl>
+
+                <FormControl sx={{width: 400, margin: 1}}>
+                <InputLabel id="demo-simple-select-label">Index</InputLabel>
+                <Select
+                    value={index}
+                    labelId="select-index"
+                    id="select-index-id"
+                    style={{width: 400, margin: "0 auto"}}
+                    label={"Index"}
+                    error={indexError}
+                    onChange={(event) => handleIndex(event.target.value)}>
+                    <MenuItem value={0}>Follow Category Indexing Rule</MenuItem>
+                    <MenuItem value={1}>Override: Allow Indexing</MenuItem>
+                    <MenuItem value={2}>Override: Disallow Indexing</MenuItem>
                 </Select>
                 </FormControl>
 

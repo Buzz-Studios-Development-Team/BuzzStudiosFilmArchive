@@ -88,7 +88,8 @@ export default function AdminControls(props) {
         details.setStars(film.stars);
         details.setSynopsis(film.synopsis);
         details.setAccess(film.access);
-        setOrder(film.order);
+        details.setIndex(film.index);
+        details.setOrder(film.order);
         details.filmfile = film.filmfile !== undefined ? film.filmfile : "";
         details.thumbnail = film.thumbnail !== undefined ? film.thumbnail : "";
         details.scriptfile = film.script !== undefined ? film.script : "";
@@ -155,6 +156,7 @@ export default function AdminControls(props) {
                         order: order,
                         access: filmDetails.getAccess(),
                         accesscode: hash,
+                        index: filmDetails.getIndex(),
                         filmfile: filmDetails.filmfile,
                         thumbnail: filmDetails.thumbnail,
                         script: filmDetails.scriptfile,
@@ -535,7 +537,7 @@ export default function AdminControls(props) {
                         <p style={{fontSize: 18, marginTop: 0, textAlign: "center"}}>Synopsis: <strong>{filmDetails.getSynopsis()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>IMDb Link: <strong>{filmDetails.getIMDB()}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Category: <strong>{filmDetails.getCategory() == 0 ? "Regular" : filmDetails.getCategory() == 1 ? "Self-Guided" : "Bonus"}</strong></p>
-                        
+                        <p style={{fontSize: 18, marginTop: 0}}>Index: <strong>{filmDetails.getIndex() == 0 ? "Follow Category Indexing Rule" : filmDetails.getIndex() == 1 ? "Override: Allow Indexing" : "Override: Disallow Indexing"}</strong></p>
                         <p style={{fontSize: 18, marginTop: 0}}>Access: 
                             <strong>{
                                 (filmDetails.getAccess() === "released" && " Publicly Released") || 
