@@ -188,7 +188,7 @@ export default class Film
     }
 
     setIndexOverride(newIndexOverride) {
-        if (this.getIndex() == 1 || this.getIndex() == 2) {
+        if (this.getIndex() === 1 || this.getIndex() === 2) {
             this.indexOverride = newIndexOverride;
             return true;
         }
@@ -202,7 +202,7 @@ export default class Film
 
     setIMDB(newIMDB) {
         //Note: Need to allow empty fields since most films will not have an IMDB page
-        if (newIMDB == undefined) {
+        if (newIMDB === undefined) {
             this.imdb = "";
             return true;
         }
@@ -226,7 +226,7 @@ export default class Film
     }
     
     checkEmpty(input) {
-        if (this.checkNull(input) && input != '') {
+        if (this.checkNull(input) && input !== '') {
             return true;
         } else {
             return false;

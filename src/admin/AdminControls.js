@@ -89,7 +89,7 @@ export default function AdminControls(props) {
         details.setSynopsis(film.synopsis);
         details.setAccess(film.access);
         details.setIndex(film.index);
-        setOrder(film.order);
+        details.setOrder(film.order);
         details.filmfile = film.filmfile !== undefined ? film.filmfile : "";
         details.thumbnail = film.thumbnail !== undefined ? film.thumbnail : "";
         details.scriptfile = film.script !== undefined ? film.script : "";
@@ -156,6 +156,7 @@ export default function AdminControls(props) {
                         order: order,
                         access: filmDetails.getAccess(),
                         accesscode: hash,
+                        index: filmDetails.getIndex(),
                         filmfile: filmDetails.filmfile,
                         thumbnail: filmDetails.thumbnail,
                         script: filmDetails.scriptfile,

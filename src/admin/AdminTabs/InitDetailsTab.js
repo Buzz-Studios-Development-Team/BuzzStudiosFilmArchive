@@ -54,7 +54,7 @@ export default function InitDetailsTab(props) {
         setAccess(access);
         setAccessError(!valid);
 
-        if (access === "restricted" && (filmDetails.accessCode == undefined || filmDetails.accessCode.trim() === "")) {
+        if (access === "restricted" && (filmDetails.accessCode === undefined || filmDetails.accessCode.trim() === "")) {
             setAccessCodeError(true);
         }
     }
@@ -82,11 +82,11 @@ export default function InitDetailsTab(props) {
         setIndexOverride(indexOverride);
         setIndexOverrideError(!valid);
 
-        if (this.index == 1) 
+        if (this.index === 1) 
             {
                 setIndexOverride(true);
             }
-        if (this.index == 2) 
+        if (this.index === 2) 
             {
                 setIndexOverride(false);
             }
@@ -195,9 +195,9 @@ export default function InitDetailsTab(props) {
                     label={"Index"}
                     error={indexError}
                     onChange={(event) => handleIndex(event.target.value)}>
-                    <MenuItem value={'normal'}>Normal Indexing</MenuItem>
-                    <MenuItem value={'allow'}>Override: Allow Indexing</MenuItem>
-                    <MenuItem value={'disallow'}>Override: Disallow Indexing</MenuItem>
+                    <MenuItem value={0}>Normal Indexing</MenuItem>
+                    <MenuItem value={1}>Override: Allow Indexing</MenuItem>
+                    <MenuItem value={2}>Override: Disallow Indexing</MenuItem>
                 </Select>
                 </FormControl>
 
