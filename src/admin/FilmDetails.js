@@ -56,12 +56,16 @@ export default class Film
             this.id = newID;
             if (/^AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890$/.test(newID))
             {
+                if (newID == "admin" || newID == "myfilms")
+                {
+                    
                 for(var i = 0; i < props.Films.length; i++)
                 {
                     if (newID.localeCompare(props.Films[i].id) === 0)
                     {
                         return true
                     }
+                }
                 }
             }
         }
