@@ -1,3 +1,8 @@
+// Firebase imports
+import { getFirestore } from "firebase/firestore";
+import { doc, setDoc, deleteDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
+
 export default class Film
 {
     #id = "";
@@ -46,10 +51,19 @@ export default class Film
         return JSON.stringify(objToReturn);
     }
 
-    setID(newID) {
+    setID(newID, props) {
         if (this.checkEmpty(newID) && this.checkLength(newID, 1, 200)) {
             this.id = newID;
-            return true;
+            if (/^AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890$/.test(newID))
+            {
+                for(var i = 0; i < props.Films.length; i++)
+                {
+                    if (newID.localeCompare(props.Films[i].id) === 0)
+                    {
+                        return true
+                    }
+                }
+            }
         }
         return false;
     }
