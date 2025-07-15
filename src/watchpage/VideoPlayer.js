@@ -2,7 +2,7 @@ export function VideoPlayer(props)
 {
     return (
         <>
-            <video ref={props.VideoRef} crossOrigin='anonymous' playsInline controls controlsList="nodownload" class="player">
+            <video ref={props.VideoRef} crossOrigin='anonymous' playsInline controls controlsList="nodownload" class="player" contentType="video/mp4">
                 <source src={props.VideoURL}/>
                 {props.CaptionTracks !== undefined && props.CaptionTracks.length > 0 && props.CaptionTracks.map((track) => {
                 return (

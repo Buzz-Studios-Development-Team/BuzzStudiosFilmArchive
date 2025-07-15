@@ -277,6 +277,8 @@ const HomePage = () => {
 
             <br></br>
 
+            {/* <p className="intro-body"><strong>The Buzz Studios Film Archive is currently down for necessary maintenance. Please check back later.</strong></p> */}
+
             {Semesters !== undefined && Semesters.map((semester, i) => {
 
               const semesterFilmDBData = FilmDBData.filter(film => film.semester === semester);

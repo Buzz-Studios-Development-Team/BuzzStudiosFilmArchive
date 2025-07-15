@@ -88,7 +88,7 @@ export default function AdminControls(props) {
         details.setStars(film.stars);
         details.setSynopsis(film.synopsis);
         details.setAccess(film.access);
-        details.setIndex(film.index);
+        details.setIndex(film.index !== undefined ? film.index : 0);
         details.setOrder(film.order);
         details.filmfile = film.filmfile !== undefined ? film.filmfile : "";
         details.thumbnail = film.thumbnail !== undefined ? film.thumbnail : "";

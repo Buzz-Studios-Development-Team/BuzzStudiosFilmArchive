@@ -1,19 +1,34 @@
 import { signInAnonymously, getAuth } from "firebase/auth";
 import { getStorage, ref, listAll } from "firebase/storage";
 
-async function requestFile(title, filename, auth, password="") {
+async function requestFile(film, auth, password="", script=false) {
 
-    const response = await fetch(process.env.REACT_APP_REQUEST_FILM_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            "title": title,
-            "film": (process.env.REACT_APP_USE_SANDBOX === "true" ? "sandbox/" : "") + filename,
-            "code": password
-        })
-    });
+    var response;
+    if (!script) {
+        response = await fetch(process.env.REACT_APP_REQUEST_FILM_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "film": film,
+                "code": password
+            })
+        });
+    }
+    else {
+        response = await fetch(process.env.REACT_APP_REQUEST_FILM_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "film": film,
+                "code": password,
+                "script": "true"
+            })
+        });
+    }
 
     const data = await response.json();
 
@@ -42,7 +57,7 @@ export async function retrieveFilmFiles(filmData, password)
 {
     var files = {};
 
-    var filmFileResult = await requestFile(filmData.title, filmData.filmfile, getAuth(), password);
+    var filmFileResult = await requestFile(filmData.id, getAuth(), password, false);
     switch (filmFileResult["result"]) {
         case "approved":
             files["film_url"] = filmFileResult["url"];
@@ -57,12 +72,12 @@ export async function retrieveFilmFiles(filmData, password)
             break;
     }
 
+    var scriptResult = await requestFile(filmData.id, getAuth(), "", true);
     if (filmData.script !== undefined && filmData.script !== "")
     {
-        var scriptFileResult = await requestFile(filmData.title, filmData.script, getAuth(), password);
-        switch (scriptFileResult["result"]) {
+        switch (scriptResult["result"]) {
             case "approved":
-                files["script_url"] = scriptFileResult["url"];
+                files["script_url"] = scriptResult["url"];
                 break;
 
             case "rejected":
@@ -73,10 +88,6 @@ export async function retrieveFilmFiles(filmData, password)
                 files["script_url"] = "500";
                 break;
         }
-    }
-    else
-    {
-        files["script_url"] = "none";
     }
 
     if (filmData.captions !== undefined && filmData.captions !== "")
