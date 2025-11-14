@@ -147,7 +147,7 @@ const HomePage = () => {
   
       for (let e = 0; e < films.length; e++) {
 
-        // If the films do not have a record for being independent (self-guided) or bonus, mark as false
+        // If the films do not have a record for being independent (veteran) or bonus, mark as false
         // They were grandfathered in
         if (films[e].independent === undefined) { films[e].independent = false; }
         if (films[e].bonus === undefined) { films[e].bonus = false; }

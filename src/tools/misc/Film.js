@@ -10,7 +10,7 @@ export default function Film(props) {
               (props.film.title.includes(":") && <h3>{props.film.title.split(":")[0] + ":"}<br></br>{props.film.title.split(":")[1]}</h3>) || !props.film.title.includes(":") && <h3>{props.film.title}</h3>
             }
             {
-              props.film.independent && <p className="independent-icon"><strong>SELF-GUIDED</strong></p>
+              props.film.independent && <p className="independent-icon"><strong>VETERAN</strong></p>
             }
             {
               props.film.bonus && <p className="bonus-icon"><strong>BONUS</strong></p>

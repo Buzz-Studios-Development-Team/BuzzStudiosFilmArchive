@@ -143,7 +143,7 @@ export default function InitDetailsTab(props) {
                     error={categoryError}
                     onChange={(event) => handleCategory(event.target.value)}>
                     <MenuItem value={0}>Regular</MenuItem>
-                    <MenuItem value={1}>Self-Guided</MenuItem>
+                    <MenuItem value={1}>Veteran</MenuItem>
                     <MenuItem value={2}>Bonus</MenuItem>
                 </Select>
                 </FormControl>
