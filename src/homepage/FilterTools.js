@@ -25,8 +25,8 @@ export default function FilterTools(props) {
                 class="radio-row"
                 row
               >
-                <FormControlLabel onClick={() => {props.setShowIndependentFilms(false); props.setShowBonusFilms(false);}} value="regular" style={{color: "white"}} control={<Radio style={{color: "white"}}/>} label="Regular Films" />
-                <FormControlLabel onClick={() => {props.setShowIndependentFilms(true); props.setShowBonusFilms(false);}} value="unguided" style={{color: "white"}} control={<Radio style={{color: "white"}}/>} label="Self-Guided Films" />
+                <FormControlLabel onClick={() => {props.setShowIndependentFilms(false); props.setShowBonusFilms(false);}} value="regular" style={{color: "white"}} control={<Radio style={{color: "white"}}/>} label="Mainline Films" />
+                <FormControlLabel onClick={() => {props.setShowIndependentFilms(true); props.setShowBonusFilms(false);}} value="unguided" style={{color: "white"}} control={<Radio style={{color: "white"}}/>} label="Veteran Films" />
                 <FormControlLabel onClick={() => {props.setShowIndependentFilms(false); props.setShowBonusFilms(true);}} value="bonus" style={{color: "white"}} control={<Radio style={{color: "white"}}/>} label="Bonus Material" />
               </RadioGroup>
             </FormControl>
