@@ -273,6 +273,7 @@ main a {
 .intro-box {
   margin: 0 auto;
   width: 550px;
+  margin-bottom: -30px;
 }
 
 .intro-header {
